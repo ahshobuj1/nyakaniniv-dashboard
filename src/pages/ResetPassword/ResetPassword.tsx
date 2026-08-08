@@ -18,7 +18,7 @@ export default function ResetPassword() {
   } = useResetPassword();
 
   return (
-    <section className="min-h-screen bg-primary/10 py-12 lg:py-20 flex flex-col items-center justify-center">
+    <section className="min-h-screen bg-primary/3 py-12 lg:py-20 flex flex-col items-center justify-center">
       <div className="max-w-7xl mx-auto px-6 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center justify-center">
           {/* Left: Form */}

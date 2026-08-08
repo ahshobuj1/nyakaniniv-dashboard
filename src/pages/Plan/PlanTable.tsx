@@ -17,26 +17,43 @@ export default function PlanTable({
     pageSize: 10,
   });
 
-  const {data, isLoading} = usePlansQuery({
-    page: pagination.pageIndex + 1,
-    limit: pagination.pageSize,
-    search: searchQuery,
-    sortBy: sortQuery,
-    sortOrder,
-  });
+  const {data, isLoading} = usePlansQuery({});
+  let plansList = data?.data ?? [];
 
-  console.log('[plan data]', data?.data);
+  // Client-side search filtering
+  if (searchQuery) {
+    const lowerQuery = searchQuery.toLowerCase();
+    plansList = plansList.filter((plan: any) =>
+      plan.name?.toLowerCase().includes(lowerQuery)
+    );
+  }
 
-  //   console.log('from console:->', data);
+  // Client-side sorting
+  if (sortQuery) {
+    plansList = [...plansList].sort((a: any, b: any) => {
+      const aVal = a[sortQuery];
+      const bVal = b[sortQuery];
 
-  const totalRows = data?.meta?.pagination?.total ?? 0;
+      if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  const totalRows = plansList.length;
   const totalPages = Math.ceil(totalRows / pagination.pageSize);
+
+  // Client-side pagination since backend returns all plans
+  const paginatedData = plansList.slice(
+    pagination.pageIndex * pagination.pageSize,
+    (pagination.pageIndex + 1) * pagination.pageSize
+  );
 
   return (
     <div className="overflow-hidden rounded-md border">
       <DataTable
         columns={columns}
-        data={data?.data ?? []}
+        data={paginatedData}
         totalRows={totalRows}
         totalPages={totalPages}
         pagination={pagination}

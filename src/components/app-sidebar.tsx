@@ -20,7 +20,6 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import {Link} from 'react-router';
-import {CalendarCheck} from 'lucide-react';
 
 const data = {
   user: {
@@ -75,11 +74,11 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!">
-              <Link to="/dashboard">
-                <CalendarCheck />
+              <Link to="/dashboard" className="flex items-center">
+                <img src="/upbeat.png" alt="logo" width={32} height={32} className='mb-1' />
 
                 <span className="text-base font-semibold">
-                  On<span className="text-primary">Schedule</span>
+                  Upbeat<span className="text-primary">Africa</span>
                 </span>
               </Link>
             </SidebarMenuButton>

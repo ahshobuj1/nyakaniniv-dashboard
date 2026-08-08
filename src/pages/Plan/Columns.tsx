@@ -19,8 +19,52 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import type {IPlan} from './type';
-import PlanStatusCell from './PlanStatusCell';
 import EditPlan from './EditPlan';
+import { useDeletePlanMutation } from '@/features/plans/plansApi';
+import toast from 'react-hot-toast';
+
+const PlanActionsCell = ({plan}: {plan: IPlan}) => {
+  const [deletePlan] = useDeletePlanMutation();
+
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this plan?')) return;
+    try {
+      await deletePlan(plan.id).unwrap();
+      toast.success('Plan deleted successfully');
+    } catch (e: any) {
+      toast.error(e?.data?.message || 'Failed to delete plan');
+    }
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end" className="py-3">
+        <EditPlan
+          item={plan}
+          trigger={
+            <DropdownMenuItem
+              onSelect={(e) => e.preventDefault()}
+              className="cursor-pointer">
+              <Edit className="mr-2 h-4 w-4" /> Edit Plan
+            </DropdownMenuItem>
+          }
+        />
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem onClick={handleDelete} className="text-destructive cursor-pointer">
+          <Trash className="mr-2 h-4 w-4" /> Delete Plan
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 export const columns: ColumnDef<IPlan>[] = [
   //  SL
@@ -40,13 +84,9 @@ export const columns: ColumnDef<IPlan>[] = [
     header: 'Plan',
     cell: ({row}) => {
       const plan = row.original;
-
       return (
         <div className="flex flex-col max-w-[320px]">
-          <span className="font-medium">{plan.name}</span>
-          <span className="text-xs text-muted-foreground line-clamp-2">
-            {plan.description}
-          </span>
+          <span className="font-medium text-primary">{plan.name}</span>
         </div>
       );
     },
@@ -59,36 +99,37 @@ export const columns: ColumnDef<IPlan>[] = [
       const plan = row.original;
 
       return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-1">
           <span className="font-medium">
-            ${plan.limits.pricing.monthly}
+            ${plan.priceMonthly}
             <span className="text-xs text-muted-foreground"> / month</span>
           </span>
-
           <span className="text-xs text-muted-foreground">
-            ${plan.limits.pricing.annualAmount} / year
+            ${plan.priceAnnually} / year
           </span>
         </div>
       );
     },
   },
 
-  //  Billing
+  // Discount
   {
-    accessorKey: 'billingCycle',
-    header: 'Billing',
-    cell: ({row}) => (
-      <Badge variant="outline">{row.original.billingCycle}</Badge>
-    ),
+    header: 'Discount',
+    cell: ({row}) => {
+      const plan = row.original;
+      if (!plan.discountPercentage) return <span className="text-muted-foreground">none</span>;
+      return <Badge variant="secondary">{plan.discountPercentage}% off</Badge>;
+    },
   },
 
   //  Features
   {
     header: 'Features',
     cell: ({row}) => {
-      const features = row.original.features as string[];
+      const features = row.original.features || {};
+      const featureKeys = Object.keys(features);
 
-      if (!features?.length) {
+      if (!featureKeys.length) {
         return <span className="text-muted-foreground pl-2">none</span>;
       }
 
@@ -96,16 +137,22 @@ export const columns: ColumnDef<IPlan>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Badge variant="secondary" className="cursor-pointer select-none">
-              {features.length} features{' '}
-              <ChevronsDown className="text-primary" />
+              {featureKeys.length} properties{' '}
+              <ChevronsDown className="text-primary ml-1 w-4 h-4" />
             </Badge>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="start" className="max-w-[300px]">
-            {features.map((feature) => (
-              <DropdownMenuItem key={feature}>
-                <ChevronsRight className="text-primary" />
-                {feature}
+            {featureKeys.map((key) => (
+              <DropdownMenuItem key={key} className="flex justify-between">
+                <span className="font-medium mr-4">{key}</span>
+                <span className="text-muted-foreground">
+                  {typeof features[key] === 'boolean'
+                    ? features[key]
+                      ? 'Yes'
+                      : 'No'
+                    : features[key]}
+                </span>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -114,59 +161,7 @@ export const columns: ColumnDef<IPlan>[] = [
     },
   },
 
-  //  Highlights
 
-  {
-    header: 'Highlights',
-    cell: ({row}) => {
-      const l = row.original.limits;
-
-      const highlights = [
-        l.enableAPI && 'API Access',
-        l.enableIntegrations && 'Integrations',
-        l.enablePrioritySupport && 'Priority Support',
-        l.enableAdvancedAnalytics && 'Advanced Analytics',
-        l.enableMultiSite && 'Multi-site',
-      ].filter(Boolean) as string[];
-
-      if (!highlights.length) {
-        return <span className="text-muted-foreground pl-2">none</span>;
-      }
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Badge variant="secondary" className="cursor-pointer select-none">
-              View
-              <ChevronsDown className="text-primary" />
-            </Badge>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent align="start">
-            {highlights.map((item) => (
-              <DropdownMenuItem key={item}>
-                <ChevronsRight className="text-primary" />
-                {item}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-
-  //  Status
-
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: ({row}) => (
-      <PlanStatusCell
-        planId={row.original.id}
-        currentStatus={row.original.status}
-      />
-    ),
-  },
 
   //  Created
   {
@@ -179,50 +174,6 @@ export const columns: ColumnDef<IPlan>[] = [
   {
     id: 'actions',
     header: 'Actions',
-    cell: ({row}) => {
-      const plan = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent align="end" className="py-3">
-            {/* <DropdownMenuItem>View Plan</DropdownMenuItem> */}
-
-            {/* ✅ Edit – SAME LOOK, proper behavior */}
-            <EditPlan
-              item={plan}
-              trigger={
-                <DropdownMenuItem
-                  onSelect={(e) => e.preventDefault()}
-                  className="cursor-pointer">
-                  <Edit /> Edit Plan
-                </DropdownMenuItem>
-              }
-            />
-
-            {/* {plan.status === 'active' ? (
-              <DropdownMenuItem className="text-yellow-600 cursor-pointer">
-                <Key /> Inactivate
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem className="text-primary cursor-pointer">
-                Activate
-              </DropdownMenuItem>
-            )} */}
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem className="text-destructive cursor-pointer">
-              <Trash /> Delete Plan
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({row}) => <PlanActionsCell plan={row.original} />,
   },
 ];

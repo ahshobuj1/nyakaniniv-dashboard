@@ -22,7 +22,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
-import {Textarea} from '@/components/ui/textarea';
 import {Checkbox} from '@/components/ui/checkbox';
 import {
   Select,
@@ -34,11 +33,10 @@ import {
 import {useEffect, useState} from 'react';
 import {toast} from 'sonner';
 import {useUpdatePlanMutation} from '@/features/plans/plansApi';
-import {editPlanSchema, type EditPlanInput} from './type';
-import {LIMIT_BOOL_LABELS, LIMIT_LABELS} from './limitLabel';
+import {editPlanSchema, type IPlan} from './type';
 
 type Props = {
-  item: EditPlanInput;
+  item: IPlan;
   trigger: React.ReactNode;
 };
 
@@ -48,27 +46,61 @@ const EditPlan = ({item, trigger}: Props) => {
 
   const [updatePlan, {isLoading}] = useUpdatePlanMutation();
 
-  console.log('[plan] : ', item);
+  const mappedFeatures = Object.entries(item.features || {}).map(([key, val]) => {
+    let valueType: 'boolean' | 'number' | 'string' = 'string';
+    let valueBoolean = true;
+    let valueNumber = 0;
+    let valueString = '';
 
-  const form = useForm<EditPlanInput>({
+    if (typeof val === 'boolean') {
+      valueType = 'boolean';
+      valueBoolean = val;
+    } else if (typeof val === 'number') {
+      valueType = 'number';
+      valueNumber = val;
+    } else {
+      valueType = 'string';
+      valueString = String(val);
+    }
+
+    return { key, valueType, valueBoolean, valueNumber, valueString };
+  });
+
+  const defaultValues = {
+    id: item.id,
+    name: item.name,
+    priceMonthly: Number(item.priceMonthly),
+    priceAnnually: Number(item.priceAnnually),
+    discountPercentage: item.discountPercentage,
+    features: mappedFeatures,
+  };
+
+  const form = useForm<any>({
     resolver: zodResolver(editPlanSchema),
-    defaultValues: item,
+    defaultValues,
   });
 
   useEffect(() => {
     if (open) {
-      form.reset(item);
+      form.reset(defaultValues);
     }
   }, [open, item, form]);
 
-  const onSubmit = async (data: EditPlanInput) => {
-    // const {id, ...data} = values;
-
+  const onSubmit = async (data: any) => {
     try {
+      const featuresObj: Record<string, any> = {};
+      data.features.forEach((f: any) => {
+        if (!f.key) return;
+        if (f.valueType === 'boolean') featuresObj[f.key] = f.valueBoolean ?? true;
+        else if (f.valueType === 'number') featuresObj[f.key] = f.valueNumber ?? 0;
+        else featuresObj[f.key] = f.valueString ?? '';
+      });
+
       await updatePlan({
         id: item?.id,
         data: {
           ...data,
+          features: featuresObj,
           id: undefined,
         },
       }).unwrap();
@@ -111,28 +143,52 @@ const EditPlan = ({item, trigger}: Props) => {
                 )}
               />
 
-              {/* Description */}
+              {/* Prices */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="priceMonthly"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormLabel>Monthly Price ($)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="priceAnnually"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormLabel>Annual Price ($)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Discount Percentage */}
               <FormField
                 control={form.control}
-                name="description"
+                name="discountPercentage"
                 render={({field}) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              {/* Price */}
-
-              <FormField
-                control={form.control}
-                name="price"
-                render={({field}) => (
-                  <FormItem>
-                    <FormLabel>Price ($)</FormLabel>
+                    <FormLabel>Discount Percentage (%)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -140,28 +196,7 @@ const EditPlan = ({item, trigger}: Props) => {
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              {/* Billing Cycle */}
-              <FormField
-                control={form.control}
-                name="billingCycle"
-                render={({field}) => (
-                  <FormItem>
-                    <FormLabel>Billing Cycle</FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="monthly">Monthly</SelectItem>
-                        <SelectItem value="annual">Annual</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -173,38 +208,116 @@ const EditPlan = ({item, trigger}: Props) => {
                 render={({field}) => (
                   <FormItem>
                     <FormLabel>Features</FormLabel>
-                    <div className="space-y-2">
-                      {field.value?.map((feature, index) => (
-                        <div key={index} className="flex gap-2">
+                    <div className="space-y-4">
+                      <datalist id="feature-keys">
+                        <option value="MAX_EVENTS" />
+                        <option value="BASIC_PROFILE" />
+                        <option value="MANUAL_BOOKINGS" />
+                        <option value="CUSTOM_SUBDOMAIN" />
+                        <option value="BASIC_ANALYTICS" />
+                        <option value="MULTIPLE_THEMES" />
+                        <option value="ONLINE_PAYMENTS" />
+                        <option value="AUTOMATED_INVOICING" />
+                        <option value="EMAIL_NOTIFICATIONS" />
+                        <option value="CUSTOM_DOMAIN" />
+                        <option value="REMOVE_BRANDING" />
+                        <option value="PRIORITY_SUPPORT" />
+                        <option value="ADVANCED_ANALYTICS" />
+                      </datalist>
+
+                      {field.value?.map((feature: any, index: number) => (
+                        <div key={index} className="flex flex-wrap gap-2 items-center p-2 border rounded-md">
                           <Input
-                            value={feature}
+                            list="feature-keys"
+                            placeholder="Key (e.g. MAX_EVENTS)"
+                            value={feature.key}
                             onChange={(e) => {
                               const updated = [...field.value];
-                              updated[index] = e.target.value;
+                              updated[index].key = e.target.value;
                               field.onChange(updated);
                             }}
+                            className="flex-1 min-w-[150px]"
                           />
+                          
+                          <Select
+                            value={feature.valueType}
+                            onValueChange={(val) => {
+                              const updated = [...field.value];
+                              updated[index].valueType = val;
+                              field.onChange(updated);
+                            }}
+                          >
+                            <SelectTrigger className="w-[120px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="boolean">Boolean</SelectItem>
+                              <SelectItem value="number">Number</SelectItem>
+                              <SelectItem value="string">String</SelectItem>
+                            </SelectContent>
+                          </Select>
+
+                          {feature.valueType === 'boolean' && (
+                            <div className="flex items-center w-[100px] justify-center">
+                              <Checkbox
+                                checked={feature.valueBoolean}
+                                onCheckedChange={(chk) => {
+                                  const updated = [...field.value];
+                                  updated[index].valueBoolean = !!chk;
+                                  field.onChange(updated);
+                                }}
+                              />
+                            </div>
+                          )}
+
+                          {feature.valueType === 'number' && (
+                            <Input
+                              type="number"
+                              className="w-[100px]"
+                              value={feature.valueNumber || 0}
+                              onChange={(e) => {
+                                const updated = [...field.value];
+                                updated[index].valueNumber = e.target.valueAsNumber;
+                                field.onChange(updated);
+                              }}
+                            />
+                          )}
+
+                          {feature.valueType === 'string' && (
+                            <Input
+                              className="w-[100px]"
+                              value={feature.valueString || ''}
+                              onChange={(e) => {
+                                const updated = [...field.value];
+                                updated[index].valueString = e.target.value;
+                                field.onChange(updated);
+                              }}
+                            />
+                          )}
+
                           <Button
                             type="button"
-                            variant="outline"
-                            onClick={() =>
+                            variant="ghost"
+                            className="text-destructive"
+                            onClick={() => {
                               field.onChange(
-                                field.value.filter((_, i) => i !== index)
-                              )
-                            }>
+                                field.value.filter((_: any, i: number) => i !== index)
+                              );
+                            }}>
                             ✕
                           </Button>
                         </div>
                       ))}
+
                       <Button
                         type="button"
-                        variant="default"
+                        variant="outline"
                         size="sm"
-                        className="font-normal"
+                        className="w-full mt-2 border-dashed"
                         onClick={() =>
-                          field.onChange([...(field.value || []), ''])
+                          field.onChange([...(field.value || []), { key: '', valueType: 'boolean', valueBoolean: true }])
                         }>
-                        + Add Feature
+                        + Add Feature Property
                       </Button>
                     </div>
                     <FormMessage />
@@ -212,72 +325,7 @@ const EditPlan = ({item, trigger}: Props) => {
                 )}
               />
 
-              {/* Limits grid */}
-              <div className="grid grid-cols-2 gap-3">
-                {(
-                  [
-                    'maxClients',
-                    'maxEmployees',
-                    'maxTools',
-                    'maxVehicles',
-                    'maxInspectionsPerMonth',
-                    'onboardingFee',
-                  ] as const
-                ).map((key) => (
-                  <FormField
-                    key={key}
-                    control={form.control}
-                    name={`limits.${key}`}
-                    render={({field}) => (
-                      <FormItem>
-                        <FormLabel className="text-xs text-muted-foreground">
-                          {LIMIT_LABELS[key]}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(e.target.valueAsNumber)
-                            }
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                ))}
-              </div>
 
-              {/* Flags grid */}
-              <div className="grid grid-cols-2 gap-3">
-                {(
-                  [
-                    'enableSMS',
-                    'enableMultiSite',
-                    'enableAdvancedAnalytics',
-                    'enablePrioritySupport',
-                    'enableAPI',
-                    'enableIntegrations',
-                  ] as const
-                ).map((key) => (
-                  <FormField
-                    key={key}
-                    control={form.control}
-                    name={`limits.${key}`}
-                    render={({field}) => (
-                      <FormItem className="flex items-center gap-2">
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                        <FormLabel className="text-sm">
-                          {LIMIT_BOOL_LABELS[key]}
-                        </FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                ))}
-              </div>
             </form>
           </Form>
         </div>

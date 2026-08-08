@@ -17,7 +17,7 @@ const routeConfig: Record<string, {label: string; hasLink: boolean}> = {
   courses: {label: 'Courses', hasLink: true},
   modules: {label: 'Modules', hasLink: true},
   lessons: {label: 'Lessons', hasLink: false},
-  plans: {label: 'Course Plans', hasLink: false},
+  plans: {label: 'Plans', hasLink: false},
   profile: {label: 'Profile', hasLink: true},
 };
 

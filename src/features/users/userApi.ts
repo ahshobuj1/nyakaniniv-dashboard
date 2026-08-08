@@ -9,7 +9,7 @@ export const userApi = createApi({
     // Authentication endpoints
     users: builder.query({
       query: (params) => ({
-        url: '/users',
+        url: '/users/v1/',
         method: 'GET',
         params: {...params},
       }),
@@ -18,24 +18,33 @@ export const userApi = createApi({
 
     user: builder.query({
       query: (id) => ({
-        url: `/users/${id}`,
+        url: `/users/v1/${id}`,
         method: 'GET',
       }),
       providesTags: ['User'],
     }),
 
-    updateUser: builder.mutation({
-      query: ({id, data}) => ({
-        url: `/users/${id}`,
+    updateUserStatus: builder.mutation({
+      query: ({id, isVerified}) => ({
+        url: `/users/v1/${id}/status`,
         method: 'PATCH',
-        data,
+        data: {isVerified},
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+    updateUserRole: builder.mutation({
+      query: ({id, role}) => ({
+        url: `/users/v1/${id}/role`,
+        method: 'PATCH',
+        data: {role},
       }),
       invalidatesTags: ['User'],
     }),
 
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `/users/${id}`,
+        url: `/users/v1/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['User'],
@@ -47,5 +56,6 @@ export const {
   useUsersQuery,
   useUserQuery,
   useDeleteUserMutation,
-  useUpdateUserMutation,
+  useUpdateUserStatusMutation,
+  useUpdateUserRoleMutation,
 } = userApi;

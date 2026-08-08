@@ -9,7 +9,7 @@ export const plansApi = createApi({
     // Authentication endpoints
     plans: builder.query({
       query: (params) => ({
-        url: '/plans',
+        url: '/subscriptions/v1/plans',
         method: 'GET',
         params: {...params},
       }),
@@ -18,7 +18,7 @@ export const plansApi = createApi({
 
     plan: builder.query({
       query: (id) => ({
-        url: `/plans/${id}`,
+        url: `/subscriptions/v1/plans/${id}`,
         method: 'GET',
       }),
       providesTags: ['Plans'],
@@ -26,7 +26,7 @@ export const plansApi = createApi({
 
     createPlan: builder.mutation({
       query: (data) => ({
-        url: '/plans',
+        url: '/subscriptions/v1/plans',
         method: 'POST',
         data,
       }),
@@ -35,25 +35,16 @@ export const plansApi = createApi({
 
     updatePlan: builder.mutation({
       query: ({id, data}) => ({
-        url: `/plans/${id}`,
+        url: `/subscriptions/v1/plans/${id}`,
         method: 'PATCH',
         data: data,
       }),
       invalidatesTags: ['Plans'],
     }),
 
-    updatePlanStatus: builder.mutation({
-      query: ({id, status}) => ({
-        url: `/plans/${id}/status`,
-        method: 'PATCH',
-        data: {status},
-      }),
-      invalidatesTags: ['Plans'],
-    }),
-
     deletePlan: builder.mutation({
       query: (id) => ({
-        url: `/plans/${id}`,
+        url: `/subscriptions/v1/plans/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Plans'],
@@ -66,6 +57,5 @@ export const {
   usePlanQuery,
   useCreatePlanMutation,
   useUpdatePlanMutation,
-  useUpdatePlanStatusMutation,
   useDeletePlanMutation,
 } = plansApi;

@@ -53,22 +53,16 @@ export const UsersFormSchema = z.object({
 
 export type TUser = z.infer<typeof UsersFormSchema>;
 
-export type UserRole = 'subscriber' | 'admin' | 'employee';
-export type UserStatus = 'active' | 'inactive';
+export type UserRole = 'SUPER_ADMIN' | 'DJ';
 
 export interface IUser {
   id: string;
-  email: string;
-  phoneNumber: string;
   firstName: string;
   lastName: string;
-  displayName: string;
+  email: string;
   role: UserRole;
-  designation: string | null;
-  status: UserStatus;
-  emailVerifiedAt: string | null;
-  terms: boolean | null;
-  avatarUrl: string | null;
+  profileImg: string | null;
+  isVerified: boolean;
   createdAt: string;
   updatedAt: string;
 }

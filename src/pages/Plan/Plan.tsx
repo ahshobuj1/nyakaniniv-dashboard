@@ -22,12 +22,11 @@ export default function Plan() {
 
   // ✅ Sorting options array
   const sortOptions = [
-    {value: 'displayName', label: 'Name'},
-    {value: 'email', label: 'Email'},
+    {value: 'name', label: 'Name'},
+    {value: 'priceMonthly', label: 'Monthly Price'},
+    {value: 'priceAnnually', label: 'Annual Price'},
     {value: 'createdAt', label: 'Created At'},
     {value: 'updatedAt', label: 'Updated At'},
-    {value: 'role', label: 'Role'},
-    {value: 'status', label: 'Status'},
   ];
 
   const handleSearch = () => setQuery(search);
