@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface DataTableProps<T> {
   columns: ColumnDef<T, unknown>[]; // ✅ replaced `any` with `unknown`
@@ -87,8 +88,8 @@ export function DataTable<T extends object>({
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={columns.length} className="text-center">
-                Loading...
+              <TableCell colSpan={columns.length} className="text-center h-48">
+                <LoadingSpinner smallHeight />
               </TableCell>
             </TableRow>
           ) : data.length ? (

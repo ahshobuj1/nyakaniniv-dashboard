@@ -17,7 +17,7 @@ export default function PlanTable({
     pageSize: 10,
   });
 
-  const {data, isLoading} = usePlansQuery({});
+  const {data, isLoading} = usePlansQuery({ all: true });
   let plansList = data?.data ?? [];
 
   // Client-side search filtering

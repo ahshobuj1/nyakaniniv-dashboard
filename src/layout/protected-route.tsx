@@ -2,6 +2,7 @@
 import {Navigate, useLocation} from 'react-router';
 import {useAuth} from '@/hooks/useAuth';
 import {toast} from 'sonner';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,7 +13,7 @@ export const ProtectedRoute = ({children}: ProtectedRouteProps) => {
   const location = useLocation();
 
   if (isLoading) {
-    return <div>Please wait a moment, Checking Authentication...</div>;
+    return <LoadingSpinner fullScreen />;
   }
 
   // Not logged in

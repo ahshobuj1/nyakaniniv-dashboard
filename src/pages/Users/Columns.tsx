@@ -3,7 +3,9 @@ import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {ActivitySquare, Key, MoreHorizontal, Trash} from 'lucide-react';
 import {formatDate} from '@/utils/formatDate';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
 import {
   useUpdateUserStatusMutation,
   useUpdateUserRoleMutation,
@@ -18,6 +20,18 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import defaultAvatar from '@/assets/default-image.jpg';
 
 import type {IUser} from './type';
@@ -26,6 +40,8 @@ const UserActionsCell = ({user}: {user: IUser}) => {
   const [updateStatus] = useUpdateUserStatusMutation();
   const [updateRole] = useUpdateUserRoleMutation();
   const [deleteUser] = useDeleteUserMutation();
+  const [deleteInput, setDeleteInput] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleVerifyToggle = async () => {
     try {
@@ -49,17 +65,21 @@ const UserActionsCell = ({user}: {user: IUser}) => {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
     try {
       await deleteUser(user.id).unwrap();
       toast.success('User deleted successfully');
+      setIsOpen(false);
     } catch (e: any) {
       toast.error(e?.data?.message || 'Failed to delete user');
     }
   };
 
   return (
-    <DropdownMenu>
+    <AlertDialog open={isOpen} onOpenChange={(open) => {
+      setIsOpen(open);
+      if (!open) setDeleteInput(''); // reset on close
+    }}>
+      <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <MoreHorizontal className="h-4 w-4" />
@@ -101,13 +121,52 @@ const UserActionsCell = ({user}: {user: IUser}) => {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem
-          className="text-destructive cursor-pointer"
-          onClick={handleDelete}>
-          <Trash className="mr-2 w-4 h-4" /> Delete User
-        </DropdownMenuItem>
+        <AlertDialogTrigger asChild>
+          <DropdownMenuItem
+            className="text-destructive cursor-pointer"
+            onSelect={(e) => e.preventDefault()}>
+            <Trash className="mr-2 w-4 h-4" /> Delete User
+          </DropdownMenuItem>
+        </AlertDialogTrigger>
       </DropdownMenuContent>
     </DropdownMenu>
+
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+        <AlertDialogDescription className="space-y-4">
+          <p>
+            This action cannot be undone. This will permanently delete the user <span className="font-semibold text-foreground">"{user.firstName} {user.lastName}"</span>.
+          </p>
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-foreground">
+              Please type <span className="font-bold text-destructive">delete</span> to confirm.
+            </p>
+            <Input 
+              value={deleteInput}
+              onChange={(e) => setDeleteInput(e.target.value)}
+              placeholder="Type delete here..."
+              className="w-full"
+            />
+          </div>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction 
+          onClick={(e) => {
+            e.preventDefault();
+            if (deleteInput.toLowerCase() === 'delete') {
+              handleDelete();
+            }
+          }} 
+          disabled={deleteInput.toLowerCase() !== 'delete'}
+          className="bg-destructive text-white hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed">
+          Delete
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
   );
 };
 
