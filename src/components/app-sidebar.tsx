@@ -2,8 +2,8 @@ import * as React from 'react';
 import {
   IconDashboard,
   IconUsers,
+  IconUsersGroup,
   IconReceipt2,
-  IconMessageUser,
   IconListCheck,
   IconPalette,
 } from '@tabler/icons-react';
@@ -39,14 +39,19 @@ const data = {
       icon: IconUsers,
     },
     {
+      title: 'Tenants',
+      url: '/dashboard/tenants',
+      icon: IconUsersGroup,
+    },
+    {
       title: 'Plans',
       url: '/dashboard/plans',
       icon: IconReceipt2,
     },
     {
-      title: 'Clients',
-      url: '/dashboard/clients',
-      icon: IconMessageUser,
+      title: 'Themes',
+      url: '/dashboard/themes',
+      icon: IconPalette,
     },
     {
       title: 'Employees',

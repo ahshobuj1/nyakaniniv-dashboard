@@ -15,6 +15,8 @@ import {contentApi} from '@/features/content/contentApi';
 import {statsApi} from '@/features/stats/statsApi';
 import {assignmentApi} from '@/features/assignment/assignmentApi';
 import {landingPageApi} from '@/features/landing-page/landingPageApi'; // ✨ Import
+import {tenantApi} from '@/features/tenants/tenantApi'; // ✨ Import Tenant API
+import {themeApi} from '@/features/themes/themeApi'; // ✨ Import Theme API
 
 import {
   // persistStore,
@@ -52,7 +54,9 @@ export const store = configureStore({
     [statsApi.reducerPath]: statsApi.reducer,
     [assignmentApi.reducerPath]: assignmentApi.reducer,
     [certificateApi.reducerPath]: certificateApi.reducer,
-    [landingPageApi.reducerPath]: landingPageApi.reducer, // ✨ Add reducer
+    [landingPageApi.reducerPath]: landingPageApi.reducer,
+    [tenantApi.reducerPath]: tenantApi.reducer, // ✨ Add Tenant reducer
+    [themeApi.reducerPath]: themeApi.reducer, // ✨ Add Theme reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -73,7 +77,9 @@ export const store = configureStore({
       certificateApi.middleware,
       assignmentApi.middleware,
       statsApi.middleware,
-      landingPageApi.middleware, // ✨ Add middleware
+      landingPageApi.middleware,
+      tenantApi.middleware, // ✨ Add Tenant middleware
+      themeApi.middleware, // ✨ Add Theme middleware
     ]),
 });
 

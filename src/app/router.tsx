@@ -9,6 +9,8 @@ import ResetPassword from '@/pages/ResetPassword/ResetPassword';
 import Plan from '@/pages/Plan/Plan';
 import Transactions from '@/pages/Transactions/Transactions';
 import LandingPageCMS from '@/pages/LandingPage/LandingPageCMS'; // ✨ Import
+import Tenants from '@/pages/Tenants/Tenants'; // ✨ Import Tenants
+import Themes from '@/pages/Themes/Themes'; // ✨ Import Themes
 import {ProtectedRoute} from '@/layout/protected-route';
 
 const router = createBrowserRouter([
@@ -57,6 +59,14 @@ const router = createBrowserRouter([
       {
         path: 'transactions',
         element: <Transactions />,
+      },
+      {
+        path: 'tenants',
+        element: <Tenants />,
+      },
+      {
+        path: 'themes',
+        element: <Themes />,
       },
       {
         path: 'landing-page',
