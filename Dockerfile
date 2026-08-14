@@ -14,6 +14,8 @@ COPY . .
 # Build the Vite application
 ARG VITE_API_BASE_URL
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ARG VITE_AUTHORIZED_ROLE
+ENV VITE_AUTHORIZED_ROLE=$VITE_AUTHORIZED_ROLE
 RUN bun run build
 
 # Stage 2: Serve the application with Nginx
