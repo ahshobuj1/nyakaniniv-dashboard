@@ -6,7 +6,7 @@ import {
   ChevronsDown,
   Edit,
   MoreHorizontal,
-  Trash,
+  // Trash,
 } from 'lucide-react';
 import {formatDate} from '@/utils/formatDate';
 
@@ -27,7 +27,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  // AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -100,11 +100,11 @@ const PlanActionsCell = ({plan}: {plan: IPlan}) => {
 
         <DropdownMenuSeparator />
 
-        <AlertDialogTrigger asChild>
+        {/* <AlertDialogTrigger asChild>
           <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive cursor-pointer">
             <Trash className="mr-2 h-4 w-4" /> Delete Plan
           </DropdownMenuItem>
-        </AlertDialogTrigger>
+        </AlertDialogTrigger> */}
       </DropdownMenuContent>
     </DropdownMenu>
 

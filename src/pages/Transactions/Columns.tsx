@@ -13,36 +13,44 @@ export const columns: ColumnDef<TTransaction>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: 'id',
-  //   header: 'ID',
-  //   cell: ({row}) => (
-  //     <div
-  //       className="font-mono text-xs text-muted-foreground w-20 truncate"
-  //       title={row.original.id}>
-  //       {row.original.id.slice(0, 8)}...
-  //     </div>
-  //   ),
-  // },
+  {
+    id: 'customer',
+    header: 'Customer',
+    cell: ({ row }) => {
+      const email = row.original.type === 'SUBSCRIPTION' 
+        ? row.original.user?.email 
+        : row.original.booking?.client?.email;
+      const name = row.original.type === 'SUBSCRIPTION'
+        ? `${row.original.user?.firstName || ''} ${row.original.user?.lastName || ''}`
+        : row.original.booking?.client?.name;
+      
+      return (
+        <div className="flex flex-col">
+          <span className="font-medium text-sm">{name || 'N/A'}</span>
+          <span className="text-xs text-muted-foreground">{email || 'N/A'}</span>
+        </div>
+      );
+    },
+  },
   {
     accessorKey: 'amount',
     header: 'Amount',
     cell: ({ row }) => (
       <div className="font-medium uppercase">
-        {row.original.amount} {row.original.currency}
+        {row.original.amount} KES
       </div>
     ),
   },
   {
-    accessorKey: 'paymentStatus',
+    accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
-      const status = row.original.paymentStatus;
+      const status = row.original.status || 'pending';
       let variant: 'default' | 'secondary' | 'destructive' | 'outline' =
         'outline';
 
-      switch (status) {
-        case 'completed':
+      switch (status.toLowerCase()) {
+        case 'paid':
           variant = 'default';
           break;
         case 'pending':
@@ -54,9 +62,6 @@ export const columns: ColumnDef<TTransaction>[] = [
         case 'cancelled':
           variant = 'destructive';
           break;
-        case 'refunded':
-          variant = 'outline';
-          break;
       }
 
       return (
@@ -67,20 +72,22 @@ export const columns: ColumnDef<TTransaction>[] = [
     },
   },
   {
-    accessorKey: 'paymentGateway',
-    header: 'Gateway',
+    accessorKey: 'method',
+    header: 'Method',
     cell: ({ row }) => (
       <Badge variant="outline" className="capitalize font-normal">
-        {row.original.paymentGateway.replace('_', ' ')}
+        {row.original.method?.replace('_', ' ') || 'Unknown'}
       </Badge>
     ),
   },
   {
-    accessorKey: 'transactionType',
+    accessorKey: 'type',
     header: 'Type',
-    cell: ({ row }) => (
-      <span className="capitalize text-sm">{row.original.transactionType}</span>
-    ),
+    cell: ({ row }) => {
+      const isSub = row.original.type === 'SUBSCRIPTION';
+      const label = isSub ? `Subscription (${row.original.plan?.name || 'Plan'})` : `Booking (${row.original.tenant?.stageName || 'DJ'})`;
+      return <span className="capitalize text-sm">{label}</span>;
+    }
   },
   {
     accessorKey: 'createdAt',

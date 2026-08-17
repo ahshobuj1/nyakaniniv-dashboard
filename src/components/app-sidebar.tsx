@@ -4,7 +4,6 @@ import {
   IconUsers,
   IconUsersGroup,
   IconReceipt2,
-  IconListCheck,
   IconPalette,
 } from '@tabler/icons-react';
 
@@ -52,11 +51,6 @@ const data = {
       title: 'Themes',
       url: '/dashboard/themes',
       icon: IconPalette,
-    },
-    {
-      title: 'Employees',
-      url: '/dashboard/employees',
-      icon: IconListCheck,
     },
     {
       title: 'Transactions',

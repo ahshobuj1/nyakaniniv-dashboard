@@ -9,120 +9,132 @@ export const landingPageApi = createApi({
   endpoints: (builder) => ({
     getLandingPage: builder.query<TLandingPageResponse, void>({
       query: () => ({
-        url: '/landing-page',
+        url: '/landing-page/v1/content',
         method: 'GET',
       }),
       providesTags: ['LandingPage'],
     }),
 
-    updateLandingPageContent: builder.mutation<any, any>({
+    // --- HERO ---
+    createHero: builder.mutation<any, FormData>({
       query: (data) => ({
-        url: '/landing-page/content',
-        method: 'PATCH',
-        data,
-      }),
-      invalidatesTags: ['LandingPage'],
-    }),
-
-    createFeature: builder.mutation<any, any>({
-      query: (data) => ({
-        url: '/landing-page/features',
+        url: '/landing-page/v1/hero',
         method: 'POST',
         data,
       }),
       invalidatesTags: ['LandingPage'],
     }),
-
-    updateFeature: builder.mutation<any, { id: string; data: any }>({
+    updateHero: builder.mutation<any, { id: number; data: FormData }>({
       query: ({ id, data }) => ({
-        url: `/landing-page/features/${id}`,
+        url: `/landing-page/v1/hero/${id}`,
         method: 'PATCH',
         data,
       }),
       invalidatesTags: ['LandingPage'],
     }),
-
-    deleteFeature: builder.mutation<any, string>({
+    deleteHero: builder.mutation<any, number>({
       query: (id) => ({
-        url: `/landing-page/features/${id}`,
+        url: `/landing-page/v1/hero/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['LandingPage'],
     }),
 
-    createTestimonial: builder.mutation<any, any>({
+    // --- STEP ---
+    createStep: builder.mutation<any, FormData>({
       query: (data) => ({
-        url: '/landing-page/testimonials',
+        url: '/landing-page/v1/step',
         method: 'POST',
         data,
       }),
       invalidatesTags: ['LandingPage'],
     }),
-
-    updateTestimonial: builder.mutation<any, { id: string; data: any }>({
+    updateStep: builder.mutation<any, { id: number; data: FormData }>({
       query: ({ id, data }) => ({
-        url: `/landing-page/testimonials/${id}`,
+        url: `/landing-page/v1/step/${id}`,
         method: 'PATCH',
         data,
       }),
       invalidatesTags: ['LandingPage'],
     }),
-
-    deleteTestimonial: builder.mutation<any, string>({
+    deleteStep: builder.mutation<any, number>({
       query: (id) => ({
-        url: `/landing-page/testimonials/${id}`,
+        url: `/landing-page/v1/step/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['LandingPage'],
     }),
 
-    createFAQ: builder.mutation<any, any>({
+    // --- SERVICE ---
+    createService: builder.mutation<any, FormData>({
       query: (data) => ({
-        url: '/landing-page/faqs',
+        url: '/landing-page/v1/service',
         method: 'POST',
         data,
       }),
       invalidatesTags: ['LandingPage'],
     }),
-
-    updateFAQ: builder.mutation<any, { id: string; data: any }>({
+    updateService: builder.mutation<any, { id: number; data: FormData }>({
       query: ({ id, data }) => ({
-        url: `/landing-page/faqs/${id}`,
+        url: `/landing-page/v1/service/${id}`,
         method: 'PATCH',
         data,
       }),
       invalidatesTags: ['LandingPage'],
     }),
-
-    deleteFAQ: builder.mutation<any, string>({
+    deleteService: builder.mutation<any, number>({
       query: (id) => ({
-        url: `/landing-page/faqs/${id}`,
+        url: `/landing-page/v1/service/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['LandingPage'],
     }),
 
-    createHowItWorks: builder.mutation<any, any>({
+    // --- FAQ ---
+    createFaq: builder.mutation<any, any>({
       query: (data) => ({
-        url: '/landing-page/how-it-works',
+        url: '/landing-page/v1/faq',
         method: 'POST',
         data,
       }),
       invalidatesTags: ['LandingPage'],
     }),
-
-    updateHowItWorks: builder.mutation<any, { id: string; data: any }>({
+    updateFaq: builder.mutation<any, { id: number; data: any }>({
       query: ({ id, data }) => ({
-        url: `/landing-page/how-it-works/${id}`,
+        url: `/landing-page/v1/faq/${id}`,
         method: 'PATCH',
         data,
       }),
       invalidatesTags: ['LandingPage'],
     }),
-
-    deleteHowItWorks: builder.mutation<any, string>({
+    deleteFaq: builder.mutation<any, number>({
       query: (id) => ({
-        url: `/landing-page/how-it-works/${id}`,
+        url: `/landing-page/v1/faq/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['LandingPage'],
+    }),
+
+    // --- SOCIAL ---
+    createSocial: builder.mutation<any, any>({
+      query: (data) => ({
+        url: '/landing-page/v1/social',
+        method: 'POST',
+        data,
+      }),
+      invalidatesTags: ['LandingPage'],
+    }),
+    updateSocial: builder.mutation<any, { id: number; data: any }>({
+      query: ({ id, data }) => ({
+        url: `/landing-page/v1/social/${id}`,
+        method: 'PATCH',
+        data,
+      }),
+      invalidatesTags: ['LandingPage'],
+    }),
+    deleteSocial: builder.mutation<any, number>({
+      query: (id) => ({
+        url: `/landing-page/v1/social/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['LandingPage'],
@@ -132,17 +144,19 @@ export const landingPageApi = createApi({
 
 export const {
   useGetLandingPageQuery,
-  useUpdateLandingPageContentMutation,
-  useCreateFeatureMutation,
-  useUpdateFeatureMutation,
-  useDeleteFeatureMutation,
-  useCreateTestimonialMutation,
-  useUpdateTestimonialMutation,
-  useDeleteTestimonialMutation,
-  useCreateFAQMutation,
-  useUpdateFAQMutation,
-  useDeleteFAQMutation,
-  useCreateHowItWorksMutation,
-  useUpdateHowItWorksMutation,
-  useDeleteHowItWorksMutation,
+  useCreateHeroMutation,
+  useUpdateHeroMutation,
+  useDeleteHeroMutation,
+  useCreateStepMutation,
+  useUpdateStepMutation,
+  useDeleteStepMutation,
+  useCreateServiceMutation,
+  useUpdateServiceMutation,
+  useDeleteServiceMutation,
+  useCreateFaqMutation,
+  useUpdateFaqMutation,
+  useDeleteFaqMutation,
+  useCreateSocialMutation,
+  useUpdateSocialMutation,
+  useDeleteSocialMutation,
 } = landingPageApi;

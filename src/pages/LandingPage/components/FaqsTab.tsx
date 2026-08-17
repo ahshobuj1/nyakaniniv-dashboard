@@ -4,28 +4,32 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { useCreateFAQMutation, useUpdateFAQMutation, useDeleteFAQMutation } from '@/features/landing-page/landingPageApi';
+import { useCreateFaqMutation, useUpdateFaqMutation, useDeleteFaqMutation } from '@/features/landing-page/landingPageApi';
 import { toast } from 'sonner';
-import type { TFAQ } from '@/features/landing-page/types';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import type { TLandingPageFaq } from '@/features/landing-page/types';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { ActionConfirmDialog } from '@/components/common/ActionConfirmDialog';
 
 interface FaqsTabProps {
-  faqs: TFAQ[];
+  faqs: TLandingPageFaq[];
 }
 
 export function FaqsTab({ faqs }: FaqsTabProps) {
-  const [createFAQ, { isLoading: isCreating }] = useCreateFAQMutation();
-  const [updateFAQ, { isLoading: isUpdating }] = useUpdateFAQMutation();
-  const [deleteFAQ, { isLoading: isDeleting }] = useDeleteFAQMutation();
+  const [createFaq, { isLoading: isCreating }] = useCreateFaqMutation();
+  const [updateFaq, { isLoading: isUpdating }] = useUpdateFaqMutation();
+  const [deleteFaq] = useDeleteFaqMutation();
   
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editingFaq, setEditingFaq] = useState<TFAQ | null>(null);
+  const [editingItem, setEditingItem] = useState<TLandingPageFaq | null>(null);
   
-  // Form state for new FAQ
-  const [newFAQ, setNewFAQ] = useState({
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    itemId: number | null;
+  }>({ isOpen: false, itemId: null });
+
+  const [newItem, setNewItem] = useState({
     question: '',
     answer: '',
     order: faqs.length + 1,
@@ -33,10 +37,10 @@ export function FaqsTab({ faqs }: FaqsTabProps) {
 
   const handleCreate = async () => {
     try {
-      await createFAQ(newFAQ).unwrap();
+      await createFaq(newItem).unwrap();
       toast.success('FAQ created successfully');
       setIsAddOpen(false);
-      setNewFAQ({ question: '', answer: '', order: faqs.length + 2 });
+      setNewItem({ question: '', answer: '', order: faqs.length + 2 });
     } catch (error) {
       toast.error('Failed to create FAQ');
       console.error(error);
@@ -44,28 +48,25 @@ export function FaqsTab({ faqs }: FaqsTabProps) {
   };
 
   const handleUpdate = async () => {
-    if (!editingFaq) return;
+    if (!editingItem) return;
     try {
-      await updateFAQ({ 
-        id: editingFaq.id, 
-        data: {
-          question: editingFaq.question,
-          answer: editingFaq.answer,
-          order: editingFaq.order
-        } 
-      }).unwrap();
+      await updateFaq({ id: editingItem.id, data: {
+        question: editingItem.question,
+        answer: editingItem.answer,
+        order: editingItem.order,
+      } }).unwrap();
       toast.success('FAQ updated successfully');
       setIsEditOpen(false);
-      setEditingFaq(null);
+      setEditingItem(null);
     } catch (error) {
       toast.error('Failed to update FAQ');
       console.error(error);
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const performDelete = async (id: number) => {
     try {
-      await deleteFAQ(id).unwrap();
+      await deleteFaq(id).unwrap();
       toast.success('FAQ deleted successfully');
     } catch (error) {
       toast.error('Failed to delete FAQ');
@@ -73,10 +74,16 @@ export function FaqsTab({ faqs }: FaqsTabProps) {
     }
   };
 
+  const executeConfirmAction = async () => {
+    if (!confirmDialog.itemId) return;
+    await performDelete(confirmDialog.itemId);
+    setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Manage FAQ</h3>
+        <h3 className="text-lg font-semibold">Manage FAQs</h3>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
             <Button><Plus className="w-4 h-4 mr-2" /> Add FAQ</Button>
@@ -84,152 +91,87 @@ export function FaqsTab({ faqs }: FaqsTabProps) {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New FAQ</DialogTitle>
-              <DialogDescription>Add a new question and answer to the landing page.</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="question">Question</Label>
-                <Input 
-                  id="question" 
-                  value={newFAQ.question} 
-                  onChange={(e) => setNewFAQ({ ...newFAQ, question: e.target.value })} 
-                />
+                <Label>Question</Label>
+                <Input value={newItem.question} onChange={(e) => setNewItem({ ...newItem, question: e.target.value })} />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="answer">Answer</Label>
-                <Textarea 
-                  id="answer" 
-                  value={newFAQ.answer} 
-                  onChange={(e) => setNewFAQ({ ...newFAQ, answer: e.target.value })} 
-                />
+                <Label>Answer</Label>
+                <Textarea value={newItem.answer} onChange={(e) => setNewItem({ ...newItem, answer: e.target.value })} />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="order">Display Order</Label>
-                <Input 
-                  id="order" 
-                  type="number" 
-                  value={newFAQ.order} 
-                  onChange={(e) => setNewFAQ({ ...newFAQ, order: parseInt(e.target.value) })} 
-                />
+                <Label>Order</Label>
+                <Input type="number" value={newItem.order} onChange={(e) => setNewItem({ ...newItem, order: parseInt(e.target.value) || 0 })} />
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancel</Button>
-              <Button onClick={handleCreate} disabled={isCreating}>
-                {isCreating ? 'Creating...' : 'Create FAQ'}
-              </Button>
+              <Button onClick={handleCreate} disabled={isCreating}>{isCreating ? 'Creating...' : 'Create'}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
 
-      {/* Edit Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit FAQ</DialogTitle>
-            <DialogDescription>Update the question and answer.</DialogDescription>
           </DialogHeader>
-          {editingFaq && (
+          {editingItem && (
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="edit-question">Question</Label>
-                <Input 
-                  id="edit-question" 
-                  value={editingFaq.question} 
-                  onChange={(e) => setEditingFaq({ ...editingFaq, question: e.target.value })} 
-                />
+                <Label>Question</Label>
+                <Input value={editingItem.question} onChange={(e) => setEditingItem({ ...editingItem, question: e.target.value })} />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-answer">Answer</Label>
-                <Textarea 
-                  id="edit-answer" 
-                  value={editingFaq.answer} 
-                  onChange={(e) => setEditingFaq({ ...editingFaq, answer: e.target.value })} 
-                />
+                <Label>Answer</Label>
+                <Textarea value={editingItem.answer} onChange={(e) => setEditingItem({ ...editingItem, answer: e.target.value })} />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-order">Display Order</Label>
-                <Input 
-                  id="edit-order" 
-                  type="number" 
-                  value={editingFaq.order} 
-                  onChange={(e) => setEditingFaq({ ...editingFaq, order: parseInt(e.target.value) })} 
-                />
+                <Label>Order</Label>
+                <Input type="number" value={editingItem.order} onChange={(e) => setEditingItem({ ...editingItem, order: parseInt(e.target.value) || 0 })} />
               </div>
             </div>
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
-            <Button onClick={handleUpdate} disabled={isUpdating}>
-              {isUpdating ? 'Updating...' : 'Update FAQ'}
-            </Button>
+            <Button onClick={handleUpdate} disabled={isUpdating}>{isUpdating ? 'Updating...' : 'Update'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <div className="space-y-4">
-        {faqs.length === 0 ? (
-          <Card>
-            <CardContent className="py-8 text-center text-muted-foreground">
-              No FAQs added yet.
+      <div className="grid grid-cols-1 gap-4">
+        {faqs.map((item) => (
+          <Card key={item.id} className="relative group">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">{item.question}</CardTitle>
+              <div className="flex gap-2">
+                 <Button variant="ghost" size="icon" onClick={() => { setEditingItem(item); setIsEditOpen(true); }}>
+                   <Pencil className="h-4 h-4 text-blue-600" />
+                 </Button>
+                 <Button variant="ghost" size="icon" onClick={() => setConfirmDialog({ isOpen: true, itemId: item.id })}>
+                   <Trash2 className="h-4 h-4 text-red-600" />
+                 </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground">{item.answer}</p>
             </CardContent>
           </Card>
-        ) : (
-          faqs.map((faq) => (
-            <Card key={faq.id} className="relative group">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-semibold">{faq.question}</CardTitle>
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                   <Button 
-                     variant="ghost" 
-                     size="icon" 
-                     className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                     onClick={() => {
-                       setEditingFaq(faq);
-                       setIsEditOpen(true);
-                     }}
-                   >
-                     <Pencil className="h-4 h-4" />
-                   </Button>
-                   
-                   <AlertDialog>
-                     <AlertDialogTrigger asChild>
-                       <Button 
-                         variant="ghost" 
-                         size="icon" 
-                         className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
-                       >
-                         <Trash2 className="h-4 h-4" />
-                       </Button>
-                     </AlertDialogTrigger>
-                     <AlertDialogContent>
-                       <AlertDialogHeader>
-                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                         <AlertDialogDescription>
-                           This action cannot be undone. This will permanently delete the FAQ.
-                         </AlertDialogDescription>
-                       </AlertDialogHeader>
-                       <AlertDialogFooter>
-                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                         <AlertDialogAction 
-                           onClick={() => handleDelete(faq.id)}
-                           className="bg-red-600 hover:bg-red-700"
-                         >
-                           {isDeleting ? 'Deleting...' : 'Delete'}
-                         </AlertDialogAction>
-                       </AlertDialogFooter>
-                     </AlertDialogContent>
-                   </AlertDialog>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-xs text-muted-foreground">{faq.answer}</p>
-              </CardContent>
-            </Card>
-          ))
-        )}
+        ))}
       </div>
+
+      <ActionConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onOpenChange={(isOpen) => setConfirmDialog((prev) => ({ ...prev, isOpen }))}
+        title="Delete FAQ"
+        description="This action cannot be undone."
+        actionName="delete"
+        itemName="FAQ"
+        onConfirm={executeConfirmAction}
+      />
     </div>
   );
 }

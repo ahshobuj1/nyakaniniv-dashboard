@@ -1,33 +1,44 @@
 export const TransactionStatus = {
     PENDING: 'pending',
-    PROCESSING: 'processing',
-    COMPLETED: 'completed',
+    PAID: 'paid',
     FAILED: 'failed',
     CANCELLED: 'cancelled',
-    REFUNDED: 'refunded',
 } as const;
 
 export const PaymentGateway = {
-    STRIPE: 'stripe',
-    PAYPAL: 'paypal',
+    PAYSTACK: 'PAYSTACK',
+    CARD: 'CARD',
+    CASH: 'CASH'
 } as const;
 
 export type TTransaction = {
     id: string;
-    membershipId: string;
     amount: string | number;
-    currency: string;
-    paymentGateway: string;
-    paymentStatus: string;
-    transactionType: string;
-    externalId: string | null;
-    description: string | null;
-    metadata?: {
-        invoiceId?: string;
-        [key: string]: any;
-    };
-    processedAt: string | null;
-    refundedAt: string | null;
+    status: string;
+    method: string;
+    type: 'SUBSCRIPTION' | 'BOOKING';
     createdAt: string;
     updatedAt: string;
+    
+    // For Subscription
+    user?: {
+        email: string;
+        firstName: string;
+        lastName: string;
+    };
+    plan?: {
+        name: string;
+    };
+
+    // For Booking
+    tenant?: {
+        subdomain: string;
+        stageName: string;
+    };
+    booking?: {
+        client?: {
+            name: string;
+            email: string;
+        }
+    };
 };

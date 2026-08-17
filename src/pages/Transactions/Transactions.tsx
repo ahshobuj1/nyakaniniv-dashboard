@@ -23,7 +23,7 @@ export default function Transactions() {
     const sortOptions = [
         { value: 'createdAt', label: 'Date Created' },
         { value: 'amount', label: 'Amount' },
-        { value: 'paymentStatus', label: 'Status' },
+        { value: 'status', label: 'Status' },
         { value: 'updatedAt', label: 'Last Updated' },
     ];
 
@@ -37,7 +37,7 @@ export default function Transactions() {
                 <div>
                     <h1 className="text-2xl font-bold">Transactions</h1>
                     <p className="text-muted-foreground text-sm">
-                        Manage and monitor payments and refunds.
+                        Manage and monitor payments.
                     </p>
                 </div>
 
@@ -46,7 +46,7 @@ export default function Transactions() {
                         {/* Search */}
                         <div className="flex items-center gap-2 w-full lg:w-auto">
                             <Input
-                                placeholder="Search by ref or description..."
+                                placeholder="Search by email or ID..."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                                 onKeyDown={e => e.key === 'Enter' && handleSearch()}
@@ -77,7 +77,7 @@ export default function Transactions() {
                                 <SelectValue placeholder="Gateway" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">All Gateways</SelectItem>
+                                <SelectItem value="all">All Methods</SelectItem>
                                 {Object.values(PaymentGateway).map(gateway => (
                                     <SelectItem key={gateway} value={gateway}>
                                         <span className="capitalize">

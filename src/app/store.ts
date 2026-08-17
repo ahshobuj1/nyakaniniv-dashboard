@@ -2,21 +2,12 @@
 import {configureStore} from '@reduxjs/toolkit';
 import authReducer from '@/features/auth/authSlice';
 import {userApi} from '@/features/users/userApi';
-import {clientApi} from '@/features/client/clientApi';
 import {plansApi} from './../features/plans/plansApi';
-import {employeesApi} from '@/features/employees/employeesApi';
 import {authApi} from '@/features/auth/authApi';
-
-import {coursesApi} from '@/features/courses/coursesApi';
-import {modulesApi} from '@/features/modules/modulesApi';
 import {transactionsApi} from '@/features/transactions/transactionsApi';
-import {certificateApi} from '@/features/certificate/certificateApi';
-import {contentApi} from '@/features/content/contentApi';
-import {statsApi} from '@/features/stats/statsApi';
-import {assignmentApi} from '@/features/assignment/assignmentApi';
-import {landingPageApi} from '@/features/landing-page/landingPageApi'; // ✨ Import
-import {tenantApi} from '@/features/tenants/tenantApi'; // ✨ Import Tenant API
-import {themeApi} from '@/features/themes/themeApi'; // ✨ Import Theme API
+import {landingPageApi} from '@/features/landing-page/landingPageApi';
+import {tenantApi} from '@/features/tenants/tenantApi';
+import {themeApi} from '@/features/themes/themeApi';
 
 import {
   // persistStore,
@@ -43,20 +34,11 @@ export const store = configureStore({
     auth: persistedAuthReducer,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
-    [clientApi.reducerPath]: clientApi.reducer,
     [plansApi.reducerPath]: plansApi.reducer,
-    [employeesApi.reducerPath]: employeesApi.reducer,
-
-    [coursesApi.reducerPath]: coursesApi.reducer,
-    [modulesApi.reducerPath]: modulesApi.reducer,
-    [contentApi.reducerPath]: contentApi.reducer,
     [transactionsApi.reducerPath]: transactionsApi.reducer,
-    [statsApi.reducerPath]: statsApi.reducer,
-    [assignmentApi.reducerPath]: assignmentApi.reducer,
-    [certificateApi.reducerPath]: certificateApi.reducer,
     [landingPageApi.reducerPath]: landingPageApi.reducer,
-    [tenantApi.reducerPath]: tenantApi.reducer, // ✨ Add Tenant reducer
-    [themeApi.reducerPath]: themeApi.reducer, // ✨ Add Theme reducer
+    [tenantApi.reducerPath]: tenantApi.reducer,
+    [themeApi.reducerPath]: themeApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -66,20 +48,11 @@ export const store = configureStore({
     }).concat([
       authApi.middleware,
       userApi.middleware,
-      clientApi.middleware,
       plansApi.middleware,
-      employeesApi.middleware,
-
-      coursesApi.middleware,
-      modulesApi.middleware,
-      contentApi.middleware,
       transactionsApi.middleware,
-      certificateApi.middleware,
-      assignmentApi.middleware,
-      statsApi.middleware,
       landingPageApi.middleware,
-      tenantApi.middleware, // ✨ Add Tenant middleware
-      themeApi.middleware, // ✨ Add Theme middleware
+      tenantApi.middleware,
+      themeApi.middleware,
     ]),
 });
 

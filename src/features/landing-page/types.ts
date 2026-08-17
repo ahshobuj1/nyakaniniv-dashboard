@@ -1,74 +1,37 @@
-export interface TLandingPageContent {
-  id: string;
-  heroTitle: string;
-  heroSubtitle: string;
-  heroCtaText: string;
-  heroCtaLink: string;
-  heroBackgroundImage: string;
-  statsTitle: string;
-  stat1Value: string;
-  stat1Label: string;
-  stat2Value: string;
-  stat2Label: string;
-  stat3Value: string;
-  stat3Label: string;
-  featureSectionTitle: string;
-  featureSectionSubtitle: string;
-  howItWorksTitle: string;
-  howItWorksSubtitle: string;
-  testimonialTitle: string;
-  testimonialSubtitle: string;
-  faqTitle: string;
-  faqSubtitle: string;
-  ctaTitle: string;
-  ctaSubtitle: string;
-  ctaButtonText: string;
-  ctaButtonLink: string;
-  ctaBackgroundImage: string;
-  footerText: string;
-  copyrightText?: string | null;
-  facebookLink?: string | null;
-  twitterLink?: string | null;
-  linkedinLink?: string | null;
-  instagramLink?: string | null;
-  youtubeLink?: string | null;
+export interface TLandingPageHero {
+  id: number;
+  title: string | null;
+  description: string | null;
+  imageUrl1: string | null;
+  imageUrl2: string | null;
+  imageUrl3: string | null;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface TFeature {
-  id: string;
-  icon?: string | null;
+export interface TLandingPageStep {
+  id: number;
   title: string;
-  description: string;
+  description: string | null;
+  imageUrl: string | null;
   order: number;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface THowItWorks {
-  id: string;
-  stepNumber: number;
+export interface TLandingPageService {
+  id: number;
   title: string;
-  description: string;
-  icon: string;
+  description: string | null;
+  imageUrl: string | null;
+  order: number;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface TTestimonial {
-  id: string;
-  name: string;
-  designation: string;
-  content: string;
-  avatarUrl: string;
-  rating: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface TFAQ {
-  id: string;
+export interface TLandingPageFaq {
+  id: number;
   question: string;
   answer: string;
   order: number;
@@ -76,12 +39,21 @@ export interface TFAQ {
   updatedAt: string;
 }
 
+export interface TLandingPageSocial {
+  id: number;
+  platform: string;
+  url: string;
+  icon: string | null;
+  isActive: boolean;
+  order: number;
+}
+
 export interface TLandingPageData {
-  content: TLandingPageContent;
-  features: TFeature[];
-  howItWorks: THowItWorks[];
-  testimonials: TTestimonial[];
-  faqs: TFAQ[];
+  hero: TLandingPageHero | null;
+  steps: TLandingPageStep[];
+  services: TLandingPageService[];
+  faqs: TLandingPageFaq[];
+  socials: TLandingPageSocial[];
 }
 
 export interface TLandingPageResponse {

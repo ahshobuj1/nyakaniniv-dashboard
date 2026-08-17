@@ -1,12 +1,12 @@
 import { useGetLandingPageQuery } from '@/features/landing-page/landingPageApi';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { GeneralContentForm } from '@/pages/LandingPage/components/GeneralContentForm';
-import { FeaturesTab } from '@/pages/LandingPage/components/FeaturesTab';
-import { TestimonialsTab } from '@/pages/LandingPage/components/TestimonialsTab';
-import { HowItWorksTab } from '@/pages/LandingPage/components/HowItWorksTab';
-import { FaqsTab } from '@/pages/LandingPage/components/FaqsTab';
 import { Skeleton } from '@/components/ui/skeleton';
+
+import { HeroTab } from './components/HeroTab';
+import { StepsTab } from './components/StepsTab';
+import { ServicesTab } from './components/ServicesTab';
+import { FaqsTab } from './components/FaqsTab';
+import { SocialTab } from './components/SocialTab';
 
 export default function LandingPageCMS() {
   const { data, isLoading } = useGetLandingPageQuery();
@@ -31,41 +31,33 @@ export default function LandingPageCMS() {
         </div>
       </div>
 
-      <Tabs defaultValue="content" className="space-y-4">
+      <Tabs defaultValue="hero" className="space-y-4">
         <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full md:w-auto h-auto gap-2">
-          <TabsTrigger value="content">General Content</TabsTrigger>
-          <TabsTrigger value="features">Features</TabsTrigger>
-          <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
-          <TabsTrigger value="how-it-works">How It Works</TabsTrigger>
+          <TabsTrigger value="hero">Hero Section</TabsTrigger>
+          <TabsTrigger value="services">Services</TabsTrigger>
+          <TabsTrigger value="steps">How It Works</TabsTrigger>
           <TabsTrigger value="faqs">FAQs</TabsTrigger>
+          <TabsTrigger value="socials">Footer Socials</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="content" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>General Content</CardTitle>
-              <CardDescription>Update hero section, stats, and overall page titles.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {landingData?.content && <GeneralContentForm initialData={landingData.content} />}
-            </CardContent>
-          </Card>
+        <TabsContent value="hero">
+          <HeroTab hero={landingData?.hero || null} />
         </TabsContent>
 
-        <TabsContent value="features">
-          <FeaturesTab features={landingData?.features || []} />
+        <TabsContent value="services">
+          <ServicesTab services={landingData?.services || []} />
         </TabsContent>
 
-        <TabsContent value="testimonials">
-          <TestimonialsTab testimonials={landingData?.testimonials || []} />
-        </TabsContent>
-
-        <TabsContent value="how-it-works">
-          <HowItWorksTab steps={landingData?.howItWorks || []} />
+        <TabsContent value="steps">
+          <StepsTab steps={landingData?.steps || []} />
         </TabsContent>
 
         <TabsContent value="faqs">
           <FaqsTab faqs={landingData?.faqs || []} />
+        </TabsContent>
+
+        <TabsContent value="socials">
+          <SocialTab socials={landingData?.socials || []} />
         </TabsContent>
       </Tabs>
     </div>

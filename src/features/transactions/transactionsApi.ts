@@ -8,7 +8,7 @@ export const transactionsApi = createApi({
     endpoints: builder => ({
         getTransactions: builder.query({
             query: params => ({
-                url: '/billing/history',
+                url: '/invoices/v1/all',
                 method: 'GET',
                 params: { ...params },
             }),
@@ -16,7 +16,7 @@ export const transactionsApi = createApi({
         }),
         getTransaction: builder.query({
             query: id => ({
-                url: `/billing/history/${id}`,
+                url: `/invoices/v1/${id}`,
                 method: 'GET',
             }),
             providesTags: ['Transactions'],

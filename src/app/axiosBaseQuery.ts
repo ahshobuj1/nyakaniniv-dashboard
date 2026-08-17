@@ -32,17 +32,26 @@ export const axiosBaseQuery =
       const state = getState() as RootState;
       const token = state.auth.token;
 
-      const mergedHeaders = {
+      const mergedHeaders: any = {
         ...headers,
         ...(token ? {Authorization: `Bearer ${token}`} : {}),
       };
+
+      if (data instanceof FormData) {
+        delete axiosInstance.defaults.headers.common['Content-Type'];
+        delete axiosInstance.defaults.headers.post['Content-Type'];
+        delete axiosInstance.defaults.headers.patch['Content-Type'];
+        delete axiosInstance.defaults.headers.put['Content-Type'];
+        // Also ensure it's not in mergedHeaders
+        delete mergedHeaders['Content-Type'];
+      }
 
       const result = await axiosInstance({
         url,
         method,
         data,
         params,
-        headers: mergedHeaders,
+        headers: data instanceof FormData ? { ...mergedHeaders, 'Content-Type': 'multipart/form-data' } : mergedHeaders,
         onUploadProgress,
       });
       return {data: result.data as TData};
