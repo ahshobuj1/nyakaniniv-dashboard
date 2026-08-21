@@ -8,6 +8,7 @@ import {transactionsApi} from '@/features/transactions/transactionsApi';
 import {landingPageApi} from '@/features/landing-page/landingPageApi';
 import {tenantApi} from '@/features/tenants/tenantApi';
 import {themeApi} from '@/features/themes/themeApi';
+import {analyticsApi} from '@/features/analytics/analyticsApi';
 
 import {
   // persistStore,
@@ -39,6 +40,7 @@ export const store = configureStore({
     [landingPageApi.reducerPath]: landingPageApi.reducer,
     [tenantApi.reducerPath]: tenantApi.reducer,
     [themeApi.reducerPath]: themeApi.reducer,
+    [analyticsApi.reducerPath]: analyticsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -53,6 +55,7 @@ export const store = configureStore({
       landingPageApi.middleware,
       tenantApi.middleware,
       themeApi.middleware,
+      analyticsApi.middleware,
     ]),
 });
 

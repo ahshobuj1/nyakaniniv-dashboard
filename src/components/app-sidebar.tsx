@@ -73,11 +73,11 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!">
-              <Link to="/dashboard" className="flex items-center">
-                <img src="/upbeat.png" alt="logo" width={32} height={32} className='mb-1' />
+              <Link to="/dashboard" className="flex items-center gap-2">
+                <img src="/upbeat.png" alt="logo" width={32} height={32} className='mb-1 shrink-0' />
 
-                <span className="text-base font-semibold">
-                  Upbeat<span className="text-primary">Africa</span>
+                <span className="text-sm font-semibold truncate">
+                  UpBeat <span className="text-primary">Entertainment Africa</span>
                 </span>
               </Link>
             </SidebarMenuButton>

@@ -19,14 +19,14 @@ export default function LoginPage() {
                 <img src="/upbeat.png" alt="logo" width={40} height={40} className='mb-1' />
 
                 <span className="text-xl font-semibold">
-                  Upbeat<span className="text-primary">Africa</span>
+                  UpBeat <span className="text-primary">Entertainment Africa</span>
                 </span>
               </Link>
               <p className="text-lg text-muted-foreground max-w-lg">
                 <span className="text-primary">Welcome</span> back to the
                 <span className="text-primary">
                   {' '}
-                  Upbeat Africa Admin Dashboard
+                  UpBeat Entertainment Africa Admin Dashboard
                 </span>
                 . Log in to efficiently manage{' '}
                 <span className="font-medium">DJs</span>,{' '}
