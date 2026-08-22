@@ -2,16 +2,21 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { TTransaction } from './type';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/utils/formatDate';
+import { Link } from 'react-router';
 
 export const columns: ColumnDef<TTransaction>[] = [
   {
     id: 'serialNumber',
     header: 'SN',
-    cell: ({ row }) => (
-      <div className="text-muted-foreground w-8">
-        {row.index + 1}
-      </div>
-    ),
+    cell: ({ row, table }) => {
+      const pageIndex = table.getState().pagination.pageIndex;
+      const pageSize = table.getState().pagination.pageSize;
+      return (
+        <div className="text-muted-foreground w-8">
+          {pageIndex * pageSize + row.index + 1}
+        </div>
+      );
+    },
   },
   {
     id: 'customer',
@@ -85,8 +90,8 @@ export const columns: ColumnDef<TTransaction>[] = [
     header: 'Type',
     cell: ({ row }) => {
       const isSub = row.original.type === 'SUBSCRIPTION';
-      const label = isSub ? `Subscription (${row.original.plan?.name || 'Plan'})` : `Booking (${row.original.tenant?.stageName || 'DJ'})`;
-      return <span className="capitalize text-sm">{label}</span>;
+      const label = isSub ? `Subscription (${row.original.plan?.name || 'Plan'})` : `Booking (${row.original.tenant?.subdomain || 'DJ'})`;
+      return isSub ? <span>{label}</span> : <Link to={`https://${row.original.tenant?.subdomain}.deejay.africa`} target='_blank' className="capitalize text-sm cursor-pointer text-primary hover:text-primary/80">{label}</Link>;
     }
   },
   {

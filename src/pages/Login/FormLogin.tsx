@@ -14,6 +14,7 @@ export const FromLogin = () => {
     isLoading,
     isSuccess,
     isError,
+    errorMessage,
     showPassword,
     togglePasswordVisibility,
     setValue,
@@ -23,17 +24,17 @@ export const FromLogin = () => {
     <div>
       {/* Success/Error Messages */}
       {isSuccess && (
-        <div className="mb-6 p-4 bg-background border  rounded-lg">
-          <p className="text-chart-2 text-sm font-medium">
+        <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+          <p className="text-emerald-700 text-sm font-medium">
             Login successful! Redirecting...
           </p>
         </div>
       )}
 
       {isError && (
-        <div className="mb-6 p-4 bg-background border rounded-lg">
-          <p className="text-chart-1text-sm font-medium">
-            Login failed. Please check your credentials and try again.
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-700 text-sm font-medium">
+            {errorMessage || 'Login failed. Please check your credentials and try again.'}
           </p>
         </div>
       )}

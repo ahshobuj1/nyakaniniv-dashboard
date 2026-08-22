@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useNavigate, useLocation} from 'react-router';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import {resetPasswordSchema, type ResetPasswordFormData} from './type';
 import {useResetPasswordMutation} from '@/features/auth/authApi';
 

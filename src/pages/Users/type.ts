@@ -53,7 +53,8 @@ export const UsersFormSchema = z.object({
 
 export type TUser = z.infer<typeof UsersFormSchema>;
 
-export type UserRole = 'SUPER_ADMIN' | 'DJ';
+import { UserRole } from '@/types/role';
+export { UserRole };
 
 export interface IUser {
   id: string;

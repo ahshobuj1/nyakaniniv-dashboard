@@ -36,8 +36,11 @@ import type {IPlan} from './type';
 import EditPlan from './EditPlan';
 import { useDeletePlanMutation, useUpdatePlanMutation } from '@/features/plans/plansApi';
 import { toast } from 'sonner';
+import { useAuth } from '@/hooks/useAuth';
+import { UserRole } from '@/types/role';
 
 const PlanStatusCell = ({plan}: {plan: IPlan}) => {
+  const { role } = useAuth();
   const [updatePlan] = useUpdatePlanMutation();
 
   const handleToggle = async (checked: boolean) => {
@@ -49,9 +52,11 @@ const PlanStatusCell = ({plan}: {plan: IPlan}) => {
     }
   };
 
+  const isSuperAdmin = role === UserRole.SUPER_ADMIN;
+
   return (
     <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-      <Switch checked={plan.isActive} onCheckedChange={handleToggle} />
+      <Switch checked={plan.isActive} onCheckedChange={handleToggle} disabled={!isSuperAdmin} />
       <span className={`text-xs font-semibold ${plan.isActive ? 'text-green-600' : 'text-gray-400'}`}>
         {plan.isActive ? 'Enabled' : 'Disabled'}
       </span>
@@ -60,9 +65,15 @@ const PlanStatusCell = ({plan}: {plan: IPlan}) => {
 };
 
 const PlanActionsCell = ({plan}: {plan: IPlan}) => {
+  const { role } = useAuth();
   const [deletePlan] = useDeletePlanMutation();
   const [deleteInput, setDeleteInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+
+  // Only SUPER_ADMIN can edit/delete plans
+  if (role !== UserRole.SUPER_ADMIN) {
+    return <span className="text-xs text-muted-foreground italic">Read only</span>;
+  }
 
   const handleDelete = async () => {
     try {

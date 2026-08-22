@@ -34,14 +34,22 @@ import {
 
 import defaultAvatar from '@/assets/default-image.jpg';
 
+import { useAuth } from '@/hooks/useAuth';
+import { UserRole } from '@/types/role';
 import type {IUser} from './type';
 
 const UserActionsCell = ({user}: {user: IUser}) => {
+  const { role: currentUserRole } = useAuth();
   const [updateStatus] = useUpdateUserStatusMutation();
   const [updateRole] = useUpdateUserRoleMutation();
   const [deleteUser] = useDeleteUserMutation();
   const [deleteInput, setDeleteInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+
+  // Only SUPER_ADMIN is allowed to modify user status, role, or delete users
+  if (currentUserRole !== UserRole.SUPER_ADMIN) {
+    return <span className="text-xs text-muted-foreground italic">Read only</span>;
+  }
 
   const handleVerifyToggle = async () => {
     try {
@@ -54,8 +62,7 @@ const UserActionsCell = ({user}: {user: IUser}) => {
     }
   };
 
-  const handleRoleToggle = async () => {
-    const newRole = user.role === 'SUPER_ADMIN' ? 'DJ' : 'SUPER_ADMIN';
+  const handleRoleChange = async (newRole: UserRole) => {
     try {
       await updateRole({id: user.id, role: newRole}).unwrap();
       toast.success(`User is now a ${newRole}`);
@@ -104,30 +111,36 @@ const UserActionsCell = ({user}: {user: IUser}) => {
 
         <DropdownMenuSeparator />
 
-        {/* Role Change */}
-        {user.role === 'SUPER_ADMIN' ? (
+        {/* Role Change: Only between ADMIN and DJ (SUPER_ADMIN cannot be assigned or modified) */}
+        {user.role === UserRole.DJ && (
           <DropdownMenuItem
             className="text-blue-600 cursor-pointer"
-            onClick={handleRoleToggle}>
-            <ActivitySquare className="mr-2" /> Make DJ
-          </DropdownMenuItem>
-        ) : (
-          <DropdownMenuItem
-            className="text-purple-600 cursor-pointer"
-            onClick={handleRoleToggle}>
-            <ActivitySquare className="mr-2" /> Make Super Admin
+            onClick={() => handleRoleChange(UserRole.ADMIN)}>
+            <ActivitySquare className="mr-2" /> Make Admin
           </DropdownMenuItem>
         )}
 
-        <DropdownMenuSeparator />
-
-        <AlertDialogTrigger asChild>
+        {user.role === UserRole.ADMIN && (
           <DropdownMenuItem
-            className="text-destructive cursor-pointer"
-            onSelect={(e) => e.preventDefault()}>
-            <Trash className="mr-2 w-4 h-4" /> Delete User
+            className="text-emerald-600 cursor-pointer"
+            onClick={() => handleRoleChange(UserRole.DJ)}>
+            <ActivitySquare className="mr-2" /> Make DJ
           </DropdownMenuItem>
-        </AlertDialogTrigger>
+        )}
+
+        {user.role !== UserRole.SUPER_ADMIN && (
+          <>
+            <DropdownMenuSeparator />
+
+            <AlertDialogTrigger asChild>
+              <DropdownMenuItem
+                className="text-destructive cursor-pointer"
+                onSelect={(e) => e.preventDefault()}>
+                <Trash className="mr-2 w-4 h-4" /> Delete User
+              </DropdownMenuItem>
+            </AlertDialogTrigger>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
 
@@ -208,12 +221,13 @@ export const columns: ColumnDef<IUser>[] = [
     cell: ({row}) => {
       const role = row.original.role;
 
-      const roleColor: Record<typeof role, string> = {
-        SUPER_ADMIN: 'bg-purple-600',
-        DJ: 'bg-blue-600',
+      const roleColor: Record<UserRole, string> = {
+        [UserRole.SUPER_ADMIN]: 'bg-purple-600',
+        [UserRole.ADMIN]: 'bg-blue-600',
+        [UserRole.DJ]: 'bg-emerald-600',
       };
 
-      return <Badge className={`${roleColor[role]} text-white`}>{role}</Badge>;
+      return <Badge className={`${roleColor[role] || 'bg-gray-600'} text-white`}>{role}</Badge>;
     },
   },
 

@@ -63,7 +63,7 @@ export function RecentBookingsCard({ bookings = [] }: RecentBookingsCardProps) {
                   <th className="py-3 px-5">Client</th>
                   <th className="py-3 px-4">Event Type</th>
                   <th className="py-3 px-4">Assigned DJ</th>
-                  <th className="py-3 px-4">Amount</th>
+                  <th className="py-3 px-4">Amount (KES)</th>
                   <th className="py-3 px-4">Status</th>
                   <th className="py-3 px-5 text-right">Date</th>
                 </tr>
@@ -71,7 +71,7 @@ export function RecentBookingsCard({ bookings = [] }: RecentBookingsCardProps) {
               <tbody className="divide-y divide-border/30">
                 {bookings.map((booking) => {
                   const djName =
-                    booking.tenant?.stageName ||
+                    booking.tenant?.subdomain ||
                     `${booking.tenant?.user?.firstName || ''} ${booking.tenant?.user?.lastName || ''}`.trim() ||
                     'Unknown DJ';
 
@@ -84,8 +84,8 @@ export function RecentBookingsCard({ bookings = [] }: RecentBookingsCardProps) {
                   return (
                     <tr key={booking.id} className="hover:bg-muted/30 transition-colors">
                       <td className="py-3 px-5">
-                        <div className="font-semibold text-foreground">{booking.clientName || 'Anonymous'}</div>
-                        <div className="text-[11px] text-muted-foreground">{booking.clientEmail || 'No email'}</div>
+                        <div className="font-semibold text-foreground">{booking.client?.name || booking.clientName || 'Anonymous'}</div>
+                        <div className="text-[11px] text-muted-foreground">{booking.client?.email || booking.clientEmail || 'No email'}</div>
                       </td>
 
                       <td className="py-3 px-4">
@@ -95,7 +95,8 @@ export function RecentBookingsCard({ bookings = [] }: RecentBookingsCardProps) {
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-1.5 text-foreground font-medium">
                           <Music size={13} className="text-primary shrink-0" />
-                          <span>{djName}</span>
+                          <Link to={`https://${djName}.deejay.africa`} 
+                          className="cursor-pointer text-primary hover:text-primary/80 font-semibold" target='_blank'>{djName}</Link>
                         </div>
                       </td>
 

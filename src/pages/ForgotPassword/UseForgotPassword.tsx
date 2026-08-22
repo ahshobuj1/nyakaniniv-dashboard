@@ -1,7 +1,7 @@
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useNavigate} from 'react-router';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import {forgotPasswordSchema, type ForgotPasswordFormData} from './type';
 import {useForgotPasswordMutation} from '@/features/auth/authApi';
 

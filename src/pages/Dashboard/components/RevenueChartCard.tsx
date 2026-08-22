@@ -97,7 +97,7 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
         ) : (
           <div className="h-72 w-full pt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={formattedData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={formattedData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#f63131" stopOpacity={0.4} />
@@ -113,10 +113,17 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
                   dy={10}
                 />
                 <YAxis
+                  width={48}
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                  tickFormatter={(val) => `$${val}`}
+                  tickFormatter={(val) => {
+                    const num = Number(val);
+                    if (num >= 1000) {
+                      return `$${(num / 1000).toFixed(num % 1000 === 0 ? 0 : 1)}k`;
+                    }
+                    return `$${num}`;
+                  }}
                 />
                 <Tooltip
                   content={({ active, payload, label }) => {

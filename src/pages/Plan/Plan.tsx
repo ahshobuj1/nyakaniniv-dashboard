@@ -14,7 +14,11 @@ import PlanTable from './PlanTable';
 import CreatePlan from './CreatePlan';
 // import CreatePlan from './CreatePlan';
 
+import {useAuth} from '@/hooks/useAuth';
+import {UserRole} from '@/types/role';
+
 export default function Plan() {
+  const {role} = useAuth();
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('createdAt');
@@ -67,7 +71,9 @@ export default function Plan() {
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           />
           <Button onClick={handleSearch}>Search</Button>
-          <CreatePlan trigger={<Button>+ Create Plan</Button>} />
+          {role === UserRole.SUPER_ADMIN && (
+            <CreatePlan trigger={<Button>+ Create Plan</Button>} />
+          )}
         </div>
       </header>
 

@@ -4,13 +4,16 @@ import {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useNavigate} from 'react-router';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import {loginFormSchema, type LoginFormData} from './type';
 import {useLoginMutation} from '@/features/auth/authApi';
+import {UserRole} from '@/types/role';
 
 export const useLoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [login, {isLoading, isSuccess, isError, error}] = useLoginMutation();
+  const [login, {isLoading}] = useLoginMutation();
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const {
@@ -34,37 +37,36 @@ export const useLoginForm = () => {
   const termsValue = watch('terms');
 
   const onSubmit = async (values: LoginFormData) => {
+    setLoginSuccess(false);
+    setLoginError(null);
     try {
-      // console.log(values);
-      // toast.success('Login successful! Redirecting...');
-
-      // setTimeout(() => {
-      //   navigate('/dashboard', {replace: true});
-      // }, 500);
-
       const res = await login({
         email: values.email,
         password: values.password,
       }).unwrap();
       console.log('Login success:', res);
 
-      // Check role here since unwrapping succeeds even if onQueryStarted throws
-      if (res?.data?.user?.role !== 'SUPER_ADMIN') {
-        throw new Error('Unauthorized role');
+      const userRole = res?.data?.user?.role;
+
+      // Check role here — only SUPER_ADMIN or ADMIN are allowed in this dashboard
+      if (!([UserRole.SUPER_ADMIN, UserRole.ADMIN] as string[]).includes(userRole)) {
+        throw new Error('Access denied: You do not have permission to access the admin dashboard.');
       }
 
       if (res.success) {
+        setLoginSuccess(true);
         toast.success('Login successful! Redirecting...');
         setTimeout(() => {
           navigate('/dashboard', {replace: true});
         }, 500);
       }
     } catch (err: any) {
-      if (err?.message === 'Unauthorized role') {
-        toast.error('You do not have permission to access the dashboard.');
-        return;
-      }
-      const message = err?.data?.message || 'Login failed. Please try again.';
+      const message =
+        err?.message === 'Access denied: You do not have permission to access the admin dashboard.'
+          ? err.message
+          : err?.data?.message || err?.message || 'Login failed. Please check your credentials and try again.';
+      
+      setLoginError(message);
       toast.error(message);
     }
   };
@@ -79,9 +81,9 @@ export const useLoginForm = () => {
     handleSubmit: handleSubmit(onSubmit),
     errors,
     isLoading,
-    isSuccess,
-    isError,
-    error: error as any,
+    isSuccess: loginSuccess,
+    isError: !!loginError,
+    errorMessage: loginError,
     showPassword,
     togglePasswordVisibility,
     setValue, // Now available!

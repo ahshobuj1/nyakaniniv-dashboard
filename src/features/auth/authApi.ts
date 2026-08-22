@@ -3,6 +3,8 @@ import {axiosBaseQuery} from '@/app/axiosBaseQuery';
 import {createApi} from '@reduxjs/toolkit/query/react';
 import {setCredentials, logout} from './authSlice';
 
+import { UserRole } from '@/types/role';
+
 export const authApi = createApi({
   reducerPath: 'authApi', // More specific name to avoid conflicts
   baseQuery: axiosBaseQuery(),
@@ -19,7 +21,7 @@ export const authApi = createApi({
         try {
           const {data} = await queryFulfilled;
           
-          if (data?.data?.user?.role !== 'SUPER_ADMIN') {
+          if (!([UserRole.SUPER_ADMIN, UserRole.ADMIN] as string[]).includes(data?.data?.user?.role)) {
             throw new Error('Unauthorized role');
           }
 

@@ -1,25 +1,48 @@
+export interface PlanSubscriptionStats {
+  planId: number;
+  planName: string;
+  priceMonthly: number;
+  priceAnnually: number;
+  isActive: boolean;
+  activeSubscribers: number;
+  totalPurchases: number;
+}
+
 export interface SubscriptionStats {
   active: number;
   canceled: number;
   pastDue: number;
+  total?: number;
+  byPlan?: PlanSubscriptionStats[];
+}
+
+export interface RecentBookingClient {
+  id?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
 }
 
 export interface RecentBookingTenantUser {
   firstName?: string;
   lastName?: string;
+  email?: string;
 }
 
 export interface RecentBookingTenant {
-  stageName?: string;
+  id?: string;
+  subdomain?: string;
   user?: RecentBookingTenantUser;
 }
 
 export interface RecentBooking {
   id: string;
-  clientName: string;
-  clientEmail: string;
+  client?: RecentBookingClient;
+  clientName?: string;
+  clientEmail?: string;
   eventType: string;
   eventDate?: string;
+  address?: string;
   totalAmount: number;
   status: string;
   createdAt: string;
