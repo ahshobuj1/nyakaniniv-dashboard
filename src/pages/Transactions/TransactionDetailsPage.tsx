@@ -15,7 +15,6 @@ import {
     User,
     Calendar,
     ExternalLink,
-    Printer,
     Download,
     Building2,
     ShieldCheck,
