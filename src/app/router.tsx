@@ -8,6 +8,7 @@ import ForgotPassword from '@/pages/ForgotPassword/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword/ResetPassword';
 import Plan from '@/pages/Plan/Plan';
 import Transactions from '@/pages/Transactions/Transactions';
+import TransactionDetailsPage from '@/pages/Transactions/TransactionDetailsPage';
 import LandingPageCMS from '@/pages/LandingPage/LandingPageCMS'; // ✨ Import
 import Tenants from '@/pages/Tenants/Tenants'; // ✨ Import Tenants
 import Themes from '@/pages/Themes/Themes'; // ✨ Import Themes
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: 'transactions',
         element: <Transactions />,
+      },
+      {
+        path: 'transactions/:id',
+        element: <TransactionDetailsPage />,
       },
       {
         path: 'tenants',

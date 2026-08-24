@@ -127,14 +127,16 @@ export function getColumns(
             header: '',
             cell: ({ row }) => (
                 <Button
+                    asChild
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    onClick={() => onViewDetails(row.original)}
                     id={`view-transaction-${row.original.id}`}
                     title="View Details"
                 >
-                    <Eye className="h-4 w-4" />
+                    <Link to={`/dashboard/transactions/${row.original.id}`}>
+                        <Eye className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                    </Link>
                 </Button>
             ),
         },
@@ -143,3 +145,4 @@ export function getColumns(
 
 // Legacy export for backward compatibility
 export const columns = getColumns(() => {});
+

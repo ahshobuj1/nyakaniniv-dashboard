@@ -11,9 +11,7 @@ import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TransactionsTable } from './TransactionsTable';
-import { TransactionDetailsModal } from './TransactionDetailsModal';
 import { TransactionStatus, PaymentGateway } from './type';
-import type { TTransaction } from './type';
 
 export default function Transactions() {
     const [search, setSearch] = useState('');
@@ -23,10 +21,6 @@ export default function Transactions() {
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [gatewayFilter, setGatewayFilter] = useState<string>('all');
     const [activeTab, setActiveTab] = useState<'all' | 'SUBSCRIPTION' | 'BOOKING'>('all');
-
-    // Transaction details modal state
-    const [selectedTransaction, setSelectedTransaction] = useState<TTransaction | null>(null);
-    const [detailsOpen, setDetailsOpen] = useState(false);
 
     const sortOptions = [
         { value: 'createdAt', label: 'Date Created' },
@@ -39,19 +33,14 @@ export default function Transactions() {
     const handleSort = (value: string) => setSort(value);
     const handleSortOrder = () => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
 
-    const handleViewDetails = (transaction: TTransaction) => {
-        setSelectedTransaction(transaction);
-        setDetailsOpen(true);
-    };
-
     const tableProps = {
         searchQuery: query,
         sortQuery: sort,
         sortOrder,
         statusFilter,
         gatewayFilter,
-        onViewDetails: handleViewDetails,
     };
+
 
     return (
         <div className="p-2">
@@ -165,16 +154,7 @@ export default function Transactions() {
                     <TransactionsTable {...tableProps} typeFilter="BOOKING" />
                 </TabsContent>
             </Tabs>
-
-            {/* Transaction Details Modal */}
-            <TransactionDetailsModal
-                transaction={selectedTransaction}
-                open={detailsOpen}
-                onClose={() => {
-                    setDetailsOpen(false);
-                    setSelectedTransaction(null);
-                }}
-            />
         </div>
     );
 }
+

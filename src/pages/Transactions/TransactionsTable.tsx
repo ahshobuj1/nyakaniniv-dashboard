@@ -19,7 +19,7 @@ export function TransactionsTable({
     statusFilter?: string;
     gatewayFilter?: string;
     typeFilter?: string;
-    onViewDetails: (transaction: TTransaction) => void;
+    onViewDetails?: (transaction: TTransaction) => void;
 }) {
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
@@ -45,7 +45,8 @@ export function TransactionsTable({
     const totalRows = data?.meta?.pagination?.total ?? 0;
     const totalPages = Math.ceil(totalRows / pagination.pageSize);
 
-    const columns = React.useMemo(() => getColumns(onViewDetails), [onViewDetails]);
+    const columns = React.useMemo(() => getColumns(onViewDetails || (() => {})), [onViewDetails]);
+
 
     return (
         <DataTable
