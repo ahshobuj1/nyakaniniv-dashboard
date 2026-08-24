@@ -5,6 +5,7 @@ import {
   IconUsersGroup,
   IconReceipt2,
   IconPalette,
+  IconHeadphones,
 } from '@tabler/icons-react';
 
 import {NavMain} from '@/components/nav-main';
@@ -19,6 +20,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import {Link} from 'react-router';
+import { useGetLandingPageQuery } from '@/features/landing-page/landingPageApi';
 
 const data = {
   user: {
@@ -62,9 +64,18 @@ const data = {
       url: '/dashboard/landing-page',
       icon: IconPalette,
     },
+    {
+      title: 'Support Tickets',
+      url: '/dashboard/support-tickets',
+      icon: IconHeadphones,
+    },
   ],
 };
+
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
+  const { data: landingData } = useGetLandingPageQuery();
+  const logoUrl = landingData?.data?.settings?.headerLogoUrl || '/upbeat.png';
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -74,7 +85,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!">
               <Link to="/dashboard" className="flex items-center gap-2">
-                <img src="/upbeat.png" alt="logo" width={32} height={32} className='mb-1 shrink-0' />
+                <img src={logoUrl} alt="logo" width={32} height={32} className='mb-1 shrink-0 h-8 w-8 object-contain' />
 
                 <span className="text-sm font-semibold truncate">
                   UpBeat <span className="text-primary">Entertainment Africa</span>

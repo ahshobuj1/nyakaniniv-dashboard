@@ -9,6 +9,7 @@ import {landingPageApi} from '@/features/landing-page/landingPageApi';
 import {tenantApi} from '@/features/tenants/tenantApi';
 import {themeApi} from '@/features/themes/themeApi';
 import {analyticsApi} from '@/features/analytics/analyticsApi';
+import {supportTicketsApi} from '@/features/support-tickets/supportTicketsApi';
 
 import {
   // persistStore,
@@ -41,6 +42,7 @@ export const store = configureStore({
     [tenantApi.reducerPath]: tenantApi.reducer,
     [themeApi.reducerPath]: themeApi.reducer,
     [analyticsApi.reducerPath]: analyticsApi.reducer,
+    [supportTicketsApi.reducerPath]: supportTicketsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -56,6 +58,7 @@ export const store = configureStore({
       tenantApi.middleware,
       themeApi.middleware,
       analyticsApi.middleware,
+      supportTicketsApi.middleware,
     ]),
 });
 

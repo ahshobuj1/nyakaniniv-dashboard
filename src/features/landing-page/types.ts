@@ -48,12 +48,21 @@ export interface TLandingPageSocial {
   order: number;
 }
 
+export interface TLandingPageSetting {
+  id?: number;
+  headerLogoUrl: string | null;
+  footerLogoUrl: string | null;
+  siteName?: string | null;
+  updatedAt?: string;
+}
+
 export interface TLandingPageData {
   hero: TLandingPageHero | null;
   steps: TLandingPageStep[];
   services: TLandingPageService[];
   faqs: TLandingPageFaq[];
   socials: TLandingPageSocial[];
+  settings: TLandingPageSetting | null;
 }
 
 export interface TLandingPageResponse {
@@ -61,3 +70,4 @@ export interface TLandingPageResponse {
   message: string;
   data: TLandingPageData;
 }
+

@@ -139,6 +139,16 @@ export const landingPageApi = createApi({
       }),
       invalidatesTags: ['LandingPage'],
     }),
+
+    // --- SETTINGS / BRANDING ---
+    updateLandingPageSettings: builder.mutation<any, FormData>({
+      query: (data) => ({
+        url: '/landing-page/v1/settings',
+        method: 'PATCH',
+        data,
+      }),
+      invalidatesTags: ['LandingPage'],
+    }),
   }),
 });
 
@@ -159,4 +169,6 @@ export const {
   useCreateSocialMutation,
   useUpdateSocialMutation,
   useDeleteSocialMutation,
+  useUpdateLandingPageSettingsMutation,
 } = landingPageApi;
+

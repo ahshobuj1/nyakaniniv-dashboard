@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import {
-  DollarSign,
+  Banknote,
   Radio,
   Users,
   CalendarCheck2,
@@ -22,9 +22,9 @@ export function OverviewStatsCards({ analytics }: OverviewStatsCardsProps) {
   const stats = [
     {
       title: 'Total Platform Revenue',
-      value: `$${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      value: `KES ${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       subtext: `${activeSubs} active paid subscriptions`,
-      icon: DollarSign,
+      icon: Banknote,
       iconColor: 'text-emerald-500',
       // bgGlow: 'from-emerald-500/10 to-transparent',
       borderColor: 'hover:border-emerald-500/30',

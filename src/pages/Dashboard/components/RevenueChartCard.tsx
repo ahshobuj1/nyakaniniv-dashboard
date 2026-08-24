@@ -9,7 +9,7 @@ import {
 } from 'recharts';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, Calendar } from 'lucide-react';
+import { Banknote, Calendar } from 'lucide-react';
 import type { MonthlyRevenueData } from '@/features/analytics/type';
 
 interface RevenueChartCardProps {
@@ -45,7 +45,7 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
           <div>
             <div className="flex items-center gap-2">
               <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
-                <DollarSign size={18} className="text-primary" />
+                <Banknote size={18} className="text-primary" />
                 Monthly Revenue Performance
               </CardTitle>
               <Badge variant="outline" className="text-xs font-semibold text-primary border-primary/20 bg-primary/5">
@@ -61,7 +61,7 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
             <div className="text-right">
               <span className="text-xs text-muted-foreground">Total Period</span>
               <p className="text-base font-bold text-foreground">
-                ${totalPeriodRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                KES {totalPeriodRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -72,13 +72,13 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
           <div className="bg-muted/40 p-2.5 rounded-lg border border-border/30">
             <span className="text-muted-foreground block text-[11px]">Monthly Average</span>
             <span className="font-semibold text-foreground text-sm">
-              ${avgMonthly.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              KES {avgMonthly.toLocaleString('en-US', { maximumFractionDigits: 0 })}
             </span>
           </div>
           <div className="bg-muted/40 p-2.5 rounded-lg border border-border/30">
             <span className="text-muted-foreground block text-[11px]">Peak Month</span>
             <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-sm">
-              ${maxRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              KES {maxRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
             </span>
           </div>
           <div className="hidden sm:block bg-muted/40 p-2.5 rounded-lg border border-border/30">
@@ -113,16 +113,16 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
                   dy={10}
                 />
                 <YAxis
-                  width={48}
+                  width={58}
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                   tickFormatter={(val) => {
                     const num = Number(val);
                     if (num >= 1000) {
-                      return `$${(num / 1000).toFixed(num % 1000 === 0 ? 0 : 1)}k`;
+                      return `${(num / 1000).toFixed(num % 1000 === 0 ? 0 : 1)}k`;
                     }
-                    return `$${num}`;
+                    return `${num}`;
                   }}
                 />
                 <Tooltip
@@ -133,8 +133,7 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
                         <div className="bg-popover border border-border p-3 rounded-xl shadow-xl text-xs">
                           <p className="font-bold text-foreground mb-1">{label}</p>
                           <div className="flex items-center gap-2 text-primary font-semibold text-sm">
-                            <DollarSign size={14} />
-                            <span>${amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                            <span>KES {amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                           </div>
                           <span className="text-[10px] text-muted-foreground mt-1 block">
                             Subscription Billings

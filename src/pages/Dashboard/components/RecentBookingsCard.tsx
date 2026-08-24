@@ -101,7 +101,7 @@ export function RecentBookingsCard({ bookings = [] }: RecentBookingsCardProps) {
                       </td>
 
                       <td className="py-3 px-4 font-bold text-foreground">
-                        ${Number(booking.totalAmount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        KES {Number(booking.totalAmount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </td>
 
                       <td className="py-3 px-4">

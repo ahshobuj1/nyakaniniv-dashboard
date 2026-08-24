@@ -94,7 +94,7 @@ export function SubscriptionDistributionCard({ subscriptions }: SubscriptionDist
                           />
                           <span className="font-semibold text-xs text-foreground">{p.planName}</span>
                           <span className="text-[11px] text-muted-foreground">
-                            ${Number(p.priceMonthly).toFixed(0)}/mo
+                            KES {Number(p.priceMonthly).toFixed(0)}/mo
                           </span>
                         </div>
 

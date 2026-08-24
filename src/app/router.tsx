@@ -12,6 +12,7 @@ import LandingPageCMS from '@/pages/LandingPage/LandingPageCMS'; // ✨ Import
 import Tenants from '@/pages/Tenants/Tenants'; // ✨ Import Tenants
 import Themes from '@/pages/Themes/Themes'; // ✨ Import Themes
 import NotFoundPage from '@/pages/NotFound/NotFoundPage';
+import SupportTickets from '@/pages/SupportTickets/SupportTickets';
 import {ProtectedRoute} from '@/layout/protected-route';
 
 const router = createBrowserRouter([
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: 'landing-page',
         element: <LandingPageCMS />,
+      },
+      {
+        path: 'support-tickets',
+        element: <SupportTickets />,
       },
       {
         path: '*',

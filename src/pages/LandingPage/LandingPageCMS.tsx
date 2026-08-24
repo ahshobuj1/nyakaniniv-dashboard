@@ -7,6 +7,7 @@ import { StepsTab } from './components/StepsTab';
 import { ServicesTab } from './components/ServicesTab';
 import { FaqsTab } from './components/FaqsTab';
 import { SocialTab } from './components/SocialTab';
+import { BrandingTab } from './components/BrandingTab';
 
 export default function LandingPageCMS() {
   const { data, isLoading } = useGetLandingPageQuery();
@@ -27,18 +28,23 @@ export default function LandingPageCMS() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Landing Page CMS</h1>
-          <p className="text-muted-foreground">Manage your landing page content and sections.</p>
+          <p className="text-muted-foreground">Manage your landing page content, logos, and sections.</p>
         </div>
       </div>
 
-      <Tabs defaultValue="hero" className="space-y-4">
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full md:w-auto h-auto gap-2">
+      <Tabs defaultValue="branding" className="space-y-4">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 w-full md:w-auto h-auto gap-2">
+          <TabsTrigger value="branding">Branding & Logos</TabsTrigger>
           <TabsTrigger value="hero">Hero Section</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="steps">How It Works</TabsTrigger>
           <TabsTrigger value="faqs">FAQs</TabsTrigger>
           <TabsTrigger value="socials">Footer Socials</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="branding">
+          <BrandingTab settings={landingData?.settings || null} />
+        </TabsContent>
 
         <TabsContent value="hero">
           <HeroTab hero={landingData?.hero || null} />
@@ -63,3 +69,4 @@ export default function LandingPageCMS() {
     </div>
   );
 }
+
