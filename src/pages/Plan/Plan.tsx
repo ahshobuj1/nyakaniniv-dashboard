@@ -12,7 +12,7 @@ import {
 import {ArrowDownNarrowWide, ArrowUpNarrowWide} from 'lucide-react';
 import PlanTable from './PlanTable';
 import CreatePlan from './CreatePlan';
-// import CreatePlan from './CreatePlan';
+import CurrenciesModal from './CurrenciesModal';
 
 import {useAuth} from '@/hooks/useAuth';
 import {UserRole} from '@/types/role';
@@ -71,6 +71,7 @@ export default function Plan() {
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           />
           <Button onClick={handleSearch}>Search</Button>
+          <CurrenciesModal />
           {role === UserRole.SUPER_ADMIN && (
             <CreatePlan trigger={<Button>+ Create Plan</Button>} />
           )}

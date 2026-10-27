@@ -74,7 +74,7 @@ export function TransactionDetailsModal({
                                 label="Amount"
                                 value={`KES ${transaction.amount}`}
                             />
-                            <InfoRow label="Payment Method" value={transaction.method?.replace('_', ' ')} />
+                            <InfoRow label="Payment Method" value={`${transaction.channel || 'UNKNOWN'} (${transaction.gateway || 'UNKNOWN'})`.replace(/_/g, ' ')} />
                             <InfoRow
                                 label="Type"
                                 value={isSubscription ? 'Subscription Payment' : 'Event Booking Payment'}

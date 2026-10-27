@@ -81,13 +81,16 @@ export function getColumns(
             },
         },
         {
-            accessorKey: 'method',
+            id: 'method',
             header: 'Method',
-            cell: ({ row }) => (
-                <Badge variant="outline" className="capitalize font-normal">
-                    {row.original.method?.replace('_', ' ') || 'Unknown'}
-                </Badge>
-            ),
+            cell: ({ row }) => {
+                const methodStr = `${row.original.channel || 'UNKNOWN'} (${row.original.gateway || 'UNKNOWN'})`.replace(/_/g, ' ');
+                return (
+                    <Badge variant="outline" className="capitalize font-normal">
+                        {methodStr}
+                    </Badge>
+                );
+            }
         },
         {
             accessorKey: 'type',
@@ -127,16 +130,14 @@ export function getColumns(
             header: '',
             cell: ({ row }) => (
                 <Button
-                    asChild
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
                     id={`view-transaction-${row.original.id}`}
                     title="View Details"
+                    onClick={() => onViewDetails(row.original)}
                 >
-                    <Link to={`/dashboard/transactions/${row.original.id}`}>
-                        <Eye className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                    </Link>
+                    <Eye className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                 </Button>
             ),
         },

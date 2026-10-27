@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {useState} from 'react';
 import type {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
@@ -6,6 +7,7 @@ import {
   ChevronsDown,
   Edit,
   MoreHorizontal,
+  DollarSign,
   // Trash,
 } from 'lucide-react';
 import {formatDate} from '@/utils/formatDate';
@@ -34,6 +36,7 @@ import { Switch } from '@/components/ui/switch';
 
 import type {IPlan} from './type';
 import EditPlan from './EditPlan';
+import ManagePlanPricesModal from './ManagePlanPricesModal';
 import { useDeletePlanMutation, useUpdatePlanMutation } from '@/features/plans/plansApi';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
@@ -105,6 +108,17 @@ const PlanActionsCell = ({plan}: {plan: IPlan}) => {
               onSelect={(e) => e.preventDefault()}
               className="cursor-pointer">
               <Edit className="mr-2 h-4 w-4" /> Edit Plan
+            </DropdownMenuItem>
+          }
+        />
+
+        <ManagePlanPricesModal
+          plan={plan}
+          trigger={
+            <DropdownMenuItem
+              onSelect={(e) => e.preventDefault()}
+              className="cursor-pointer">
+              <DollarSign className="mr-2 h-4 w-4" /> Country Prices
             </DropdownMenuItem>
           }
         />
@@ -186,18 +200,19 @@ export const columns: ColumnDef<IPlan>[] = [
 
   //  Price
   {
-    header: 'Price',
+    header: 'Base Price',
     cell: ({row}) => {
       const plan = row.original;
+      const curr = (plan as any).currencyCode || 'USD';
 
       return (
         <div className="flex flex-col gap-1">
           <span className="font-medium">
-            KES {Number(plan.priceMonthly).toFixed(0)}
+            {curr} {Number(plan.priceMonthly).toFixed(0)}
             <span className="text-xs text-muted-foreground"> / month</span>
           </span>
           <span className="text-xs text-muted-foreground">
-            KES {Number(plan.priceAnnually).toFixed(0)} / year
+            {curr} {Number(plan.priceAnnually).toFixed(0)} / year
           </span>
         </div>
       );

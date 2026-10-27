@@ -15,7 +15,9 @@ export type TTransaction = {
     id: string;
     amount: string | number;
     status: string;
-    method: string;
+    method?: string;
+    channel?: string;
+    gateway?: string;
     type: 'SUBSCRIPTION' | 'BOOKING';
     createdAt: string;
     updatedAt: string;
