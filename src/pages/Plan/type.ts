@@ -3,6 +3,7 @@ import {z} from 'zod';
 export interface IPlan {
   id: number;
   name: string;
+  currencyCode?: string;
   priceMonthly: string | number; // Decimal in prisma maps to string or number depending on backend json serialization
   priceAnnually: string | number;
   stripeAnnualPriceId: string;

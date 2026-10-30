@@ -43,12 +43,14 @@ export default function ManagePlanPricesModal({plan, trigger}: Props) {
     Record<string, {monthly: string; discount: string}>
   >({});
 
-  const currencies: Array<{
+  // Exclude KES (base currency managed directly from main plan) and USD
+  const allCurrencies: Array<{
     code: string;
     name: string;
     symbol: string;
     isActive: boolean;
   }> = currenciesRes?.data || [];
+  const currencies = allCurrencies.filter((c) => c.code !== 'KES' && c.code !== 'USD');
 
   const existingPrices = useMemo<
     Array<{

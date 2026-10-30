@@ -25,13 +25,16 @@ export default function CurrenciesModal({ trigger }: Props) {
   const [toggleCurrency, { isLoading: isToggling }] = useToggleCurrencyMutation();
   const [togglingCode, setTogglingCode] = useState<string | null>(null);
 
-  const currencies: Array<{
+  // Exclude USD as platform exclusively operates in local African currencies
+  // Exclude USD (inactive/deprecated) and KES (platform base currency managed strictly from main plans)
+  const rawCurrencies: Array<{
     id?: number;
     code: string;
     name: string;
     symbol: string;
     isActive: boolean;
   }> = response?.data || [];
+  const currencies = rawCurrencies.filter((c) => c.code !== 'USD' && c.code !== 'KES');
 
   const handleToggle = async (code: string, currentStatus: boolean) => {
     try {
@@ -94,11 +97,15 @@ export default function CurrenciesModal({ trigger }: Props) {
                           </span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {currency.code === 'USD'
-                            ? 'Global USD • Routed via Paystack'
-                            : currency.code === 'KES'
-                              ? 'Kenya • Routed via Pesapal'
-                              : 'African Currency • Routed via Flutterwave'}
+                          {currency.code === 'KES'
+                            ? 'Kenya (Base Platform Currency) • Primary: Paystack | Alternative: Flutterwave & Pesapal'
+                            : currency.code === 'TZS'
+                              ? 'Tanzania • Primary: Pesapal | Alternative: Flutterwave'
+                              : currency.code === 'RWF'
+                                ? 'Rwanda • Routed via Flutterwave'
+                                : currency.code === 'UGX'
+                                  ? 'Uganda • Primary: Flutterwave | Alternative: Pesapal'
+                                  : 'African Currency • Routed via Flutterwave'}
                         </p>
                       </div>
                     </div>

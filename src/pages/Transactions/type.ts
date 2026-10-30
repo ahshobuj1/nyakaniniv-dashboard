@@ -14,6 +14,7 @@ export const PaymentGateway = {
 export type TTransaction = {
     id: string;
     amount: string | number;
+    currency?: string;
     status: string;
     method?: string;
     channel?: string;

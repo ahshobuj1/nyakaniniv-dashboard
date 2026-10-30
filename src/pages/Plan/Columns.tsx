@@ -203,7 +203,7 @@ export const columns: ColumnDef<IPlan>[] = [
     header: 'Base Price',
     cell: ({row}) => {
       const plan = row.original;
-      const curr = (plan as any).currencyCode || 'USD';
+      const curr = plan.currencyCode || 'KES';
 
       return (
         <div className="flex flex-col gap-1">
