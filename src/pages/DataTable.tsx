@@ -30,7 +30,7 @@ import {
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface DataTableProps<T> {
-  columns: ColumnDef<T, unknown>[]; // ✅ replaced `any` with `unknown`
+  columns: ColumnDef<T, unknown>[];
   data: T[];
   totalRows: number;
   totalPages: number;
@@ -38,8 +38,8 @@ interface DataTableProps<T> {
   onPaginationChange: React.Dispatch<
     React.SetStateAction<{pageIndex: number; pageSize: number}>
   >;
-
   isLoading?: boolean;
+  emptyMessage?: string;
 }
 
 export function DataTable<T extends object>({
@@ -49,6 +49,7 @@ export function DataTable<T extends object>({
   pagination,
   onPaginationChange,
   isLoading,
+  emptyMessage = 'No data found.',
 }: DataTableProps<T>) {
   const table = useReactTable({
     data,
@@ -65,8 +66,6 @@ export function DataTable<T extends object>({
       }
     },
   });
-
-  // console.log(table);
 
   return (
     <div className="overflow-hidden rounded-md border">
@@ -104,8 +103,10 @@ export function DataTable<T extends object>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="text-center">
-                No data found.
+              <TableCell
+                colSpan={columns.length}
+                className="text-center py-16 text-muted-foreground text-sm font-medium">
+                {emptyMessage}
               </TableCell>
             </TableRow>
           )}
@@ -113,9 +114,9 @@ export function DataTable<T extends object>({
       </Table>
 
       {/* Pagination Controls */}
-      <div className="flex items-center justify-between px-4 py-2">
+      <div className="flex items-center justify-between px-4 py-2 border-t">
         <div className="text-sm text-muted-foreground hidden lg:block">
-          Showing page {pagination.pageIndex + 1} of {totalPages}
+          Showing page {pagination.pageIndex + 1} of {totalPages || 1}
         </div>
         <div className="flex items-center gap-3">
           <Label htmlFor="rows-per-page" className="text-sm">

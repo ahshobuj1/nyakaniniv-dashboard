@@ -28,16 +28,15 @@ export default function TenantsTable({
   const totalPages = Math.ceil(totalRows / pagination.pageSize);
 
   return (
-    <div className="overflow-hidden rounded-md border">
-      <DataTable
-        columns={columns}
-        data={data?.data ?? []}
-        totalRows={totalRows}
-        totalPages={totalPages}
-        pagination={pagination}
-        onPaginationChange={setPagination}
-        isLoading={isLoading}
-      />
-    </div>
+    <DataTable
+      columns={columns}
+      data={data?.data ?? []}
+      totalRows={totalRows}
+      totalPages={totalPages}
+      pagination={pagination}
+      onPaginationChange={setPagination}
+      isLoading={isLoading}
+      emptyMessage="No tenants available."
+    />
   );
 }

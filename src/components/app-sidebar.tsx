@@ -3,6 +3,7 @@ import {
   IconDashboard,
   IconUsers,
   IconUsersGroup,
+  IconCalendarEvent,
   IconReceipt2,
   IconPalette,
   IconHeadphones,
@@ -43,6 +44,11 @@ const data = {
       title: 'Tenants',
       url: '/dashboard/tenants',
       icon: IconUsersGroup,
+    },
+    {
+      title: 'Bookings',
+      url: '/dashboard/bookings',
+      icon: IconCalendarEvent,
     },
     {
       title: 'Plans',

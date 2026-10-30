@@ -10,7 +10,8 @@ import {
   DollarSign,
   // Trash,
 } from 'lucide-react';
-import {formatDate} from '@/utils/formatDate';
+import { formatDate } from '@/utils/formatDate';
+import { PlanBadge } from '@/components/common/PlanBadge';
 
 import {
   DropdownMenu,
@@ -191,8 +192,8 @@ export const columns: ColumnDef<IPlan>[] = [
     cell: ({row}) => {
       const plan = row.original;
       return (
-        <div className="flex flex-col max-w-[320px]">
-          <span className="font-medium text-primary">{plan.name}</span>
+        <div className="flex items-center gap-2 max-w-[320px]">
+          <PlanBadge name={plan.name} className="text-sm px-2.5 py-0.5" />
         </div>
       );
     },

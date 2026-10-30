@@ -9,7 +9,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TransactionsTable } from './TransactionsTable';
 import { TransactionStatus, PaymentGateway } from './type';
 
@@ -20,7 +19,6 @@ export default function Transactions() {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [gatewayFilter, setGatewayFilter] = useState<string>('all');
-    const [activeTab, setActiveTab] = useState<'all' | 'SUBSCRIPTION' | 'BOOKING'>('all');
 
     const sortOptions = [
         { value: 'createdAt', label: 'Date Created' },
@@ -33,22 +31,13 @@ export default function Transactions() {
     const handleSort = (value: string) => setSort(value);
     const handleSortOrder = () => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
 
-    const tableProps = {
-        searchQuery: query,
-        sortQuery: sort,
-        sortOrder,
-        statusFilter,
-        gatewayFilter,
-    };
-
-
     return (
         <div className="p-2">
             <header className="flex flex-col gap-4 mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold">Transactions</h1>
+                    <h1 className="text-2xl font-bold">Subscription Transactions</h1>
                     <p className="text-muted-foreground text-sm">
-                        Manage and monitor all payments across subscriptions and bookings.
+                        Manage and monitor all platform subscription payments and invoices.
                     </p>
                 </div>
 
@@ -58,7 +47,7 @@ export default function Transactions() {
                         <div className="flex items-center gap-2 w-full lg:w-auto">
                             <Input
                                 id="transactions-search"
-                                placeholder="Search by email or ID..."
+                                placeholder="Search by email or reference..."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                                 onKeyDown={e => e.key === 'Enter' && handleSearch()}
@@ -91,7 +80,7 @@ export default function Transactions() {
                                 <SelectValue placeholder="Gateway" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">All Methods</SelectItem>
+                                <SelectItem value="all">All Gateways</SelectItem>
                                 {Object.values(PaymentGateway).map(gateway => (
                                     <SelectItem key={gateway} value={gateway}>
                                         <span className="capitalize">
@@ -108,6 +97,7 @@ export default function Transactions() {
                                 <SelectValue placeholder="Sort By" />
                             </SelectTrigger>
                             <SelectContent>
+                                <SelectItem value="all">Sort By</SelectItem>
                                 {sortOptions.map(option => (
                                     <SelectItem key={option.value} value={option.value}>
                                         {option.label}
@@ -127,34 +117,14 @@ export default function Transactions() {
                 </div>
             </header>
 
-            {/* Tabs for Subscription vs Booking separation */}
-            <Tabs
-                value={activeTab}
-                onValueChange={v => setActiveTab(v as typeof activeTab)}
-            >
-                <TabsList className="mb-4" id="transactions-type-tabs">
-                    <TabsTrigger value="all" id="transactions-tab-all">All</TabsTrigger>
-                    <TabsTrigger value="SUBSCRIPTION" id="transactions-tab-subscription">
-                        Subscription Payments
-                    </TabsTrigger>
-                    <TabsTrigger value="BOOKING" id="transactions-tab-booking">
-                        Event Booking Payments
-                    </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="all">
-                    <TransactionsTable {...tableProps} typeFilter="all" />
-                </TabsContent>
-
-                <TabsContent value="SUBSCRIPTION">
-                    <TransactionsTable {...tableProps} typeFilter="SUBSCRIPTION" />
-                </TabsContent>
-
-                <TabsContent value="BOOKING">
-                    <TransactionsTable {...tableProps} typeFilter="BOOKING" />
-                </TabsContent>
-            </Tabs>
+            <TransactionsTable
+                searchQuery={query}
+                sortQuery={sort === 'all' ? 'createdAt' : sort}
+                sortOrder={sortOrder}
+                statusFilter={statusFilter}
+                gatewayFilter={gatewayFilter}
+                typeFilter="SUBSCRIPTION"
+            />
         </div>
     );
 }
-

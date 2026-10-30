@@ -10,6 +10,11 @@ import {tenantApi} from '@/features/tenants/tenantApi';
 import {themeApi} from '@/features/themes/themeApi';
 import {analyticsApi} from '@/features/analytics/analyticsApi';
 import {supportTicketsApi} from '@/features/support-tickets/supportTicketsApi';
+import {bookingsApi} from '@/features/bookings/bookingsApi';
+import {invoicesApi} from '@/features/invoices/invoicesApi';
+import {clientsApi} from '@/features/clients/clientsApi';
+import {eventsApi} from '@/features/events/eventsApi';
+import {mixtapesApi} from '@/features/mixtapes/mixtapesApi';
 
 import {
   // persistStore,
@@ -43,6 +48,11 @@ export const store = configureStore({
     [themeApi.reducerPath]: themeApi.reducer,
     [analyticsApi.reducerPath]: analyticsApi.reducer,
     [supportTicketsApi.reducerPath]: supportTicketsApi.reducer,
+    [bookingsApi.reducerPath]: bookingsApi.reducer,
+    [invoicesApi.reducerPath]: invoicesApi.reducer,
+    [clientsApi.reducerPath]: clientsApi.reducer,
+    [eventsApi.reducerPath]: eventsApi.reducer,
+    [mixtapesApi.reducerPath]: mixtapesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -59,6 +69,11 @@ export const store = configureStore({
       themeApi.middleware,
       analyticsApi.middleware,
       supportTicketsApi.middleware,
+      bookingsApi.middleware,
+      invoicesApi.middleware,
+      clientsApi.middleware,
+      eventsApi.middleware,
+      mixtapesApi.middleware,
     ]),
 });
 

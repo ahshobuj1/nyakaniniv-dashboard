@@ -3,18 +3,22 @@ export interface TenantUser {
   email: string;
   firstName: string;
   lastName: string;
+  profileImg?: string | null;
 }
 
 export interface TenantCounts {
   mixTapes: number;
   events: number;
   bookings: number;
+  invoices: number;
+  clients: number;
 }
 
 export interface Tenant {
   id: string;
   subdomain: string;
   stageName: string;
+  logoUrl?: string | null;
   isActive: boolean;
   activePlanId: number | null;
   activePlanName: string;

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
+import { PlanBadge } from '@/components/common/PlanBadge';
 import {
     ArrowLeft,
     CheckCircle2,
@@ -20,7 +21,7 @@ import {
     ShieldCheck,
 } from 'lucide-react';
 
-const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon: any; color: string }> = {
+const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon: React.ComponentType<{ className?: string }>; color: string }> = {
     paid: { label: 'Paid / Completed', variant: 'default', icon: CheckCircle2, color: 'text-green-600 bg-green-50 border-green-200' },
     completed: { label: 'Paid / Completed', variant: 'default', icon: CheckCircle2, color: 'text-green-600 bg-green-50 border-green-200' },
     pending: { label: 'Pending Payment', variant: 'secondary', icon: Clock, color: 'text-amber-600 bg-amber-50 border-amber-200' },
@@ -70,8 +71,8 @@ export default function TransactionDetailsPage() {
     const statusInfo = statusConfig[statusKey] ?? statusConfig.pending;
 
     // Filter to show ONLY the Paid/Successful transaction to prevent showing duplicate/pending attempts
-    const paidTransactions = (invoice.transactions || []).filter((tx: any) =>
-        ['paid', 'completed', 'success'].includes(tx.status?.toLowerCase())
+    const paidTransactions = (invoice.transactions || []).filter((tx: Record<string, unknown>) =>
+        ['paid', 'completed', 'success'].includes(String(tx.status || '').toLowerCase())
     );
     const displayTransactions = paidTransactions.length > 0
         ? paidTransactions
@@ -230,9 +231,12 @@ export default function TransactionDetailsPage() {
                                         {isSubscription ? (
                                             <tr>
                                                 <td className="py-4 px-4">
-                                                    <p className="font-bold text-gray-900">
-                                                        {invoice.plan?.name || 'Subscription'} Plan
-                                                    </p>
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="font-bold text-gray-900">
+                                                            {invoice.plan?.name || 'Subscription'} Plan
+                                                        </p>
+                                                        <PlanBadge name={invoice.plan?.name} />
+                                                    </div>
                                                     <p className="text-xs text-muted-foreground mt-0.5">
                                                         UpBeat Africa DJ Platform Membership & Tools
                                                     </p>
@@ -295,29 +299,39 @@ export default function TransactionDetailsPage() {
                             </CardHeader>
                             <CardContent className="p-0">
                                 <div className="divide-y divide-gray-100 text-sm">
-                                    {displayTransactions.map((tx: any, idx: number) => (
-                                        <div key={tx.id || idx} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-gray-50/50">
-                                            <div className="space-y-1">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="font-semibold text-gray-900">
-                                                        {tx.gateway || tx.channel || 'Paystack / Card'} Payment
-                                                    </span>
-                                                    <Badge variant={statusConfig[tx.status?.toLowerCase()]?.variant || 'default'} className="text-[11px] capitalize">
-                                                        {tx.status}
-                                                    </Badge>
+                                    {displayTransactions.map((tx: Record<string, unknown>, idx: number) => {
+                                        const txStatus = String(tx.status || '').toLowerCase();
+                                        const txGateway = String(tx.gateway || tx.channel || 'Paystack / Card');
+                                        const txRef = String(tx.reference || tx.gatewayRef || tx.gatewayReference || 'N/A');
+                                        const txAmount = Number(tx.amount || invoice.amount || 0);
+                                        const txDate = tx.createdAt ? new Date(String(tx.createdAt)).toLocaleString() : '';
+
+                                        return (
+                                            <div key={String(tx.id || idx)} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-gray-50/50">
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-semibold text-gray-900">
+                                                            {txGateway} Payment
+                                                        </span>
+                                                        <Badge variant={statusConfig[txStatus]?.variant || 'default'} className="text-[11px] capitalize">
+                                                            {String(tx.status || 'Pending')}
+                                                        </Badge>
+                                                    </div>
+                                                    <p className="text-xs text-muted-foreground font-mono">
+                                                        Reference: {txRef}
+                                                    </p>
                                                 </div>
-                                                <p className="text-xs text-muted-foreground font-mono">
-                                                    Reference: {tx.reference || tx.gatewayRef || 'N/A'}
-                                                </p>
+                                                <div className="text-right">
+                                                    <p className="font-bold text-gray-900">{txAmount} KES</p>
+                                                    {txDate ? (
+                                                        <p className="text-xs text-muted-foreground">
+                                                            {txDate}
+                                                        </p>
+                                                    ) : null}
+                                                </div>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="font-bold text-gray-900">{tx.amount} KES</p>
-                                                <p className="text-xs text-muted-foreground">
-                                                    {new Date(tx.createdAt).toLocaleString()}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </CardContent>
                         </Card>

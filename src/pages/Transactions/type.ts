@@ -7,14 +7,14 @@ export const TransactionStatus = {
 
 export const PaymentGateway = {
     PAYSTACK: 'PAYSTACK',
-    CARD: 'CARD',
-    CASH: 'CASH'
+    PESAPAL: 'PESAPAL',
 } as const;
 
 export type TTransaction = {
     id: string;
     amount: string | number;
     currency?: string;
+    currencyCode?: string;
     status: string;
     method?: string;
     channel?: string;
@@ -42,6 +42,6 @@ export type TTransaction = {
         client?: {
             name: string;
             email: string;
-        }
+        };
     };
 };

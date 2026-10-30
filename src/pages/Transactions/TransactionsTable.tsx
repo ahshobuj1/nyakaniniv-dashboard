@@ -57,6 +57,7 @@ export function TransactionsTable({
             pagination={pagination}
             onPaginationChange={setPagination}
             isLoading={isLoading}
+            emptyMessage="No subscription transactions found."
         />
     );
 }
