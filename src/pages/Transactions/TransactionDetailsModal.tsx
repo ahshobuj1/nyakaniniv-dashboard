@@ -135,7 +135,7 @@ export function TransactionDetailsModal({
           {!isSubscription && transaction.tenant && (
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                DJ / Tenant
+                Tenant
               </p>
               <div className="space-y-0.5">
                 <InfoRow

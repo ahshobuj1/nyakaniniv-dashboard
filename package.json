@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node api.js && vite",
-    "build": "node api.js && tsc -b && vite build",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "docker:test": "docker build -t ahshobuj/upbeat-africa-dashboard:latest . && docker run -d -p 5173:5173 ahshobuj/upbeat-africa-dashboard:latest",
     "docker:deploy": "docker build -t ahshobuj/upbeat-africa-dashboard:latest . && docker push ahshobuj/upbeat-africa-dashboard:latest"
   },
   "dependencies": {

@@ -15,6 +15,7 @@ import {invoicesApi} from '@/features/invoices/invoicesApi';
 import {clientsApi} from '@/features/clients/clientsApi';
 import {eventsApi} from '@/features/events/eventsApi';
 import {mixtapesApi} from '@/features/mixtapes/mixtapesApi';
+import {notificationsApi} from '@/features/notifications/notificationsApi';
 
 import {
   // persistStore,
@@ -53,6 +54,7 @@ export const store = configureStore({
     [clientsApi.reducerPath]: clientsApi.reducer,
     [eventsApi.reducerPath]: eventsApi.reducer,
     [mixtapesApi.reducerPath]: mixtapesApi.reducer,
+    [notificationsApi.reducerPath]: notificationsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -74,6 +76,7 @@ export const store = configureStore({
       clientsApi.middleware,
       eventsApi.middleware,
       mixtapesApi.middleware,
+      notificationsApi.middleware,
     ]),
 });
 

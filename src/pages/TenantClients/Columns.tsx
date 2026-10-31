@@ -18,14 +18,18 @@ export const columns: ColumnDef<Client>[] = [
     },
   },
   {
-    header: 'Client / Customer',
+    header: 'Client',
     cell: ({row}) => {
       const name = row.original.name || 'Guest Client';
       const email = row.original.email || 'No email';
       return (
         <div className="flex flex-col py-1 gap-0.5 max-w-[200px]">
-          <span className="font-semibold text-sm text-foreground truncate">{name}</span>
-          <span className="text-xs text-muted-foreground truncate">{email}</span>
+          <span className="font-semibold text-sm text-foreground truncate">
+            {name}
+          </span>
+          <span className="text-xs text-muted-foreground truncate">
+            {email}
+          </span>
         </div>
       );
     },
@@ -35,17 +39,20 @@ export const columns: ColumnDef<Client>[] = [
     header: 'Phone',
     cell: ({row}) => {
       const phone = row.original.phone;
-      if (!phone) return <span className="text-muted-foreground text-xs">—</span>;
+      if (!phone)
+        return <span className="text-muted-foreground text-xs">—</span>;
       return <span className="font-mono text-xs text-foreground">{phone}</span>;
     },
   },
   {
-    header: 'DJ / Tenant',
+    header: 'Tenant',
     cell: ({row}) => {
       const tenant = row.original.tenant;
-      if (!tenant) return <span className="text-muted-foreground text-xs">—</span>;
+      if (!tenant)
+        return <span className="text-muted-foreground text-xs">—</span>;
       const stageName = tenant.stageName || 'DJ Profile';
-      const avatarSrc = tenant.logoUrl || tenant.user?.profileImg || defaultAvatar;
+      const avatarSrc =
+        tenant.logoUrl || tenant.user?.profileImg || defaultAvatar;
 
       return (
         <div className="flex items-center gap-2.5 py-1">
@@ -58,7 +65,9 @@ export const columns: ColumnDef<Client>[] = [
             }}
           />
           <div className="flex flex-col">
-            <span className="font-medium text-xs leading-none text-foreground">{stageName}</span>
+            <span className="font-medium text-xs leading-none text-foreground">
+              {stageName}
+            </span>
             {tenant.subdomain ? (
               <a
                 href={`https://${tenant.subdomain}.deejay.africa`}
@@ -77,7 +86,8 @@ export const columns: ColumnDef<Client>[] = [
     id: 'bookingsCount',
     header: 'Bookings',
     cell: ({row}) => {
-      const count = row.original._count?.bookings ?? (row.original.bookings?.length || 0);
+      const count =
+        row.original._count?.bookings ?? (row.original.bookings?.length || 0);
       return (
         <span
           className={`inline-flex items-center justify-center font-semibold text-xs px-2.5 py-1 min-w-[2rem] rounded bg-muted ${
@@ -93,7 +103,8 @@ export const columns: ColumnDef<Client>[] = [
     header: 'Latest Booking',
     cell: ({row}) => {
       const latest = row.original.bookings?.[0];
-      if (!latest) return <span className="text-muted-foreground text-xs">—</span>;
+      if (!latest)
+        return <span className="text-muted-foreground text-xs">—</span>;
 
       return (
         <div className="flex flex-col gap-0.5 max-w-[180px]">
@@ -113,7 +124,9 @@ export const columns: ColumnDef<Client>[] = [
     cell: ({row}) => {
       const d = row.original.createdAt;
       if (!d) return <span className="text-muted-foreground text-xs">—</span>;
-      return <span className="text-xs text-muted-foreground">{formatDate(d)}</span>;
+      return (
+        <span className="text-xs text-muted-foreground">{formatDate(d)}</span>
+      );
     },
   },
 ];

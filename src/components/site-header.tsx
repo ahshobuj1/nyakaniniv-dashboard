@@ -1,6 +1,7 @@
 import {Separator} from '@/components/ui/separator';
 import {SidebarTrigger} from '@/components/ui/sidebar';
 import {useLocation, Link} from 'react-router';
+import {NotificationBell} from '@/components/notifications/NotificationBell';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -115,7 +116,9 @@ export function SiteHeader() {
         <SidebarTrigger className="-ml-1  cursor-pointer" />
         <Separator orientation="vertical" className="mx-2 h-4" />
         <Breadcrumbs />
-        <div className="ml-auto flex items-center gap-2"></div>
+        <div className="ml-auto flex items-center gap-2">
+          <NotificationBell />
+        </div>
       </div>
     </header>
   );

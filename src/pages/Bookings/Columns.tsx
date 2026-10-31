@@ -12,15 +12,31 @@ function getStatusBadge(status: string) {
   switch (s) {
     case 'CONFIRMED':
     case 'COMPLETED':
-      return <Badge className="bg-emerald-600 text-white capitalize">{s.toLowerCase()}</Badge>;
+      return (
+        <Badge className="bg-emerald-600 text-white capitalize">
+          {s.toLowerCase()}
+        </Badge>
+      );
     case 'PENDING':
     case 'AWAITING_PAYMENT':
-      return <Badge variant="secondary" className="capitalize">{s.toLowerCase().replace('_', ' ')}</Badge>;
+      return (
+        <Badge variant="secondary" className="capitalize">
+          {s.toLowerCase().replace('_', ' ')}
+        </Badge>
+      );
     case 'CANCELLED':
     case 'REJECTED':
-      return <Badge variant="destructive" className="capitalize">{s.toLowerCase()}</Badge>;
+      return (
+        <Badge variant="destructive" className="capitalize">
+          {s.toLowerCase()}
+        </Badge>
+      );
     default:
-      return <Badge variant="outline" className="capitalize">{s.toLowerCase()}</Badge>;
+      return (
+        <Badge variant="outline" className="capitalize">
+          {s.toLowerCase()}
+        </Badge>
+      );
   }
 }
 
@@ -29,13 +45,29 @@ function getPaymentBadge(status: string) {
   switch (s) {
     case 'PAID':
     case 'COMPLETED':
-      return <Badge className="bg-emerald-600 text-white capitalize">{s.toLowerCase()}</Badge>;
+      return (
+        <Badge className="bg-emerald-600 text-white capitalize">
+          {s.toLowerCase()}
+        </Badge>
+      );
     case 'PENDING':
-      return <Badge variant="secondary" className="capitalize">{s.toLowerCase()}</Badge>;
+      return (
+        <Badge variant="secondary" className="capitalize">
+          {s.toLowerCase()}
+        </Badge>
+      );
     case 'FAILED':
-      return <Badge variant="destructive" className="capitalize">{s.toLowerCase()}</Badge>;
+      return (
+        <Badge variant="destructive" className="capitalize">
+          {s.toLowerCase()}
+        </Badge>
+      );
     default:
-      return <Badge variant="outline" className="capitalize">{s.toLowerCase()}</Badge>;
+      return (
+        <Badge variant="outline" className="capitalize">
+          {s.toLowerCase()}
+        </Badge>
+      );
   }
 }
 
@@ -57,7 +89,9 @@ export const columns: ColumnDef<Booking>[] = [
     accessorKey: 'orderReference',
     header: 'Reference',
     cell: ({row}) => {
-      const ref = row.original.orderReference || row.original.id.slice(0, 8).toUpperCase();
+      const ref =
+        row.original.orderReference ||
+        row.original.id.slice(0, 8).toUpperCase();
       return (
         <span className="font-mono text-xs font-semibold text-foreground">
           {ref}
@@ -66,7 +100,7 @@ export const columns: ColumnDef<Booking>[] = [
     },
   },
   {
-    header: 'Client / Customer',
+    header: 'Client',
     cell: ({row}) => {
       const client = row.original.client;
       const name = client?.name || 'Guest Client';
@@ -77,7 +111,11 @@ export const columns: ColumnDef<Booking>[] = [
         <div className="flex flex-col py-1 gap-0.5">
           <span className="font-semibold text-sm text-foreground">{name}</span>
           <span className="text-xs text-muted-foreground">{email}</span>
-          {phone ? <span className="text-[11px] text-muted-foreground/80">{phone}</span> : null}
+          {phone ? (
+            <span className="text-[11px] text-muted-foreground/80">
+              {phone}
+            </span>
+          ) : null}
         </div>
       );
     },
@@ -93,7 +131,9 @@ export const columns: ColumnDef<Booking>[] = [
             {eventType}
           </span>
           {address ? (
-            <span className="text-xs text-muted-foreground truncate" title={address}>
+            <span
+              className="text-xs text-muted-foreground truncate"
+              title={address}>
               {address}
             </span>
           ) : null}
@@ -102,11 +142,12 @@ export const columns: ColumnDef<Booking>[] = [
     },
   },
   {
-    header: 'DJ / Tenant',
+    header: 'Tenant',
     cell: ({row}) => {
       const tenant = row.original.tenant;
       const stageName = tenant?.stageName || 'DJ Profile';
-      const avatarSrc = tenant?.logoUrl || tenant?.user?.profileImg || defaultAvatar;
+      const avatarSrc =
+        tenant?.logoUrl || tenant?.user?.profileImg || defaultAvatar;
 
       return (
         <div className="flex items-center gap-2.5 py-1">
@@ -119,7 +160,9 @@ export const columns: ColumnDef<Booking>[] = [
             }}
           />
           <div className="flex flex-col">
-            <span className="font-medium text-xs leading-none text-foreground">{stageName}</span>
+            <span className="font-medium text-xs leading-none text-foreground">
+              {stageName}
+            </span>
             {tenant?.subdomain ? (
               <a
                 href={`https://${tenant.subdomain}.deejay.africa`}
@@ -153,7 +196,9 @@ export const columns: ColumnDef<Booking>[] = [
     cell: ({row}) => {
       const d = row.original.eventDate;
       if (!d) return <span className="text-muted-foreground text-xs">—</span>;
-      return <span className="text-xs text-muted-foreground">{formatDate(d)}</span>;
+      return (
+        <span className="text-xs text-muted-foreground">{formatDate(d)}</span>
+      );
     },
   },
   {
@@ -183,4 +228,3 @@ export const columns: ColumnDef<Booking>[] = [
     ),
   },
 ];
-

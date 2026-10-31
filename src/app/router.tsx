@@ -21,6 +21,7 @@ import BookingDetailsPage from '@/pages/Bookings/BookingDetailsPage';
 import Themes from '@/pages/Themes/Themes';
 import NotFoundPage from '@/pages/NotFound/NotFoundPage';
 import SupportTickets from '@/pages/SupportTickets/SupportTickets';
+import Notifications from '@/pages/Notifications/Notifications';
 import {ProtectedRoute} from '@/layout/protected-route';
 
 const router = createBrowserRouter([
@@ -117,6 +118,10 @@ const router = createBrowserRouter([
       {
         path: 'support-tickets',
         element: <SupportTickets />,
+      },
+      {
+        path: 'notifications',
+        element: <Notifications />,
       },
       {
         path: '*',
