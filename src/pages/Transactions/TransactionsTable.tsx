@@ -45,7 +45,7 @@ export function TransactionsTable({
     const totalRows = data?.meta?.pagination?.total ?? 0;
     const totalPages = Math.ceil(totalRows / pagination.pageSize);
 
-    const columns = React.useMemo(() => getColumns(onViewDetails || (() => {})), [onViewDetails]);
+    const columns = React.useMemo(() => getColumns(onViewDetails), [onViewDetails]);
 
 
     return (

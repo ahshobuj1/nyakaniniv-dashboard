@@ -13,6 +13,7 @@ interface OverviewStatsCardsProps {
 }
 
 export function OverviewStatsCards({ analytics }: OverviewStatsCardsProps) {
+  const currencyCode = analytics?.reportingCurrency || 'KES';
   const totalRevenue = analytics?.totalRevenue ?? 0;
   const totalTenants = analytics?.totalTenants ?? 0;
   const totalUsers = analytics?.totalUsers ?? 0;
@@ -21,12 +22,11 @@ export function OverviewStatsCards({ analytics }: OverviewStatsCardsProps) {
 
   const stats = [
     {
-      title: 'Total Platform Revenue',
-      value: `KES ${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      title: `${currencyCode} Platform Revenue`,
+      value: `${currencyCode} ${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       subtext: `${activeSubs} active paid subscriptions`,
       icon: Banknote,
       iconColor: 'text-emerald-500',
-      // bgGlow: 'from-emerald-500/10 to-transparent',
       borderColor: 'hover:border-emerald-500/30',
     },
     {
@@ -35,7 +35,6 @@ export function OverviewStatsCards({ analytics }: OverviewStatsCardsProps) {
       subtext: 'Active custom subdomain sites',
       icon: Radio,
       iconColor: 'text-primary',
-      // bgGlow: 'from-primary/10 to-transparent',
       borderColor: 'hover:border-primary/30',
     },
     {
@@ -44,7 +43,6 @@ export function OverviewStatsCards({ analytics }: OverviewStatsCardsProps) {
       subtext: 'DJs, Clients & Platform Admins',
       icon: Users,
       iconColor: 'text-blue-500',
-      // bgGlow: 'from-blue-500/10 to-transparent',
       borderColor: 'hover:border-blue-500/30',
     },
     {
@@ -53,7 +51,6 @@ export function OverviewStatsCards({ analytics }: OverviewStatsCardsProps) {
       subtext: 'Events & gigs arranged',
       icon: CalendarCheck2,
       iconColor: 'text-amber-500',
-      // bgGlow: 'from-amber-500/10 to-transparent',
       borderColor: 'hover:border-amber-500/30',
     },
   ];
@@ -67,7 +64,7 @@ export function OverviewStatsCards({ analytics }: OverviewStatsCardsProps) {
             key={idx}
             className={`relative overflow-hidden transition-all duration-300 hover:shadow-md border border-border/60 ${stat.borderColor} bg-card`}>
             {/* Top gradient highlight */}
-            <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r`} />
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r" />
 
             <CardContent className="p-5">
               <div className="flex items-center justify-between gap-2 mb-3">

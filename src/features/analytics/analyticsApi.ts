@@ -7,17 +7,19 @@ export const analyticsApi = createApi({
   baseQuery: axiosBaseQuery(),
   tagTypes: ['Analytics'],
   endpoints: (builder) => ({
-    getAdminAnalytics: builder.query<AdminAnalyticsResponse, void>({
-      query: () => ({
+    getAdminAnalytics: builder.query<AdminAnalyticsResponse, string | void>({
+      query: (currency) => ({
         url: '/analytics/v1/admin',
         method: 'GET',
+        params: currency ? { currency } : undefined,
       }),
       providesTags: ['Analytics'],
     }),
-    getAdminCharts: builder.query<AdminChartsResponse, void>({
-      query: () => ({
+    getAdminCharts: builder.query<AdminChartsResponse, string | void>({
+      query: (currency) => ({
         url: '/analytics/v1/admin/charts',
         method: 'GET',
+        params: currency ? { currency } : undefined,
       }),
       providesTags: ['Analytics'],
     }),

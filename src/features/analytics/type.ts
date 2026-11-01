@@ -32,11 +32,15 @@ export interface RecentBookingTenantUser {
 export interface RecentBookingTenant {
   id?: string;
   subdomain?: string;
+  stageName?: string;
+  logoUrl?: string;
   user?: RecentBookingTenantUser;
 }
 
 export interface RecentBooking {
   id: string;
+  orderReference?: string;
+  currencyCode?: string;
   client?: RecentBookingClient;
   clientName?: string;
   clientEmail?: string;
@@ -45,15 +49,26 @@ export interface RecentBooking {
   address?: string;
   totalAmount: number;
   status: string;
+  paymentStatus?: string;
+  directPaymentStatus?: string;
   createdAt: string;
   tenant?: RecentBookingTenant;
+}
+
+export interface CurrencyRevenueBreakdown {
+  currency: string;
+  amount: number;
+  amountUsd?: number | null;
+  count: number;
 }
 
 export interface AdminAnalyticsData {
   totalUsers: number;
   totalTenants: number;
   totalBookings: number;
+  reportingCurrency?: string;
   totalRevenue: number;
+  revenueByCurrency?: CurrencyRevenueBreakdown[];
   subscriptions: SubscriptionStats;
   recentBookings: RecentBooking[];
 }

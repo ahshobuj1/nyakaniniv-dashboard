@@ -185,24 +185,26 @@ export function getColumns(
 
             {onViewDetails ? (
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                className="h-8 w-8 p-0"
+                className="h-8 gap-1.5 text-xs text-foreground hover:bg-accent"
                 id={`view-transaction-${row.original.id}`}
                 title="View Details"
                 onClick={() => onViewDetails(row.original)}>
-                <Eye className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                <Eye className="h-3.5 w-3.5" />
+                <span>Details</span>
               </Button>
             ) : (
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 asChild
-                className="h-8 w-8 p-0"
+                className="h-8 gap-1.5 text-xs text-foreground hover:bg-accent"
                 id={`view-transaction-${row.original.id}`}
                 title="View Details">
                 <Link to={`/dashboard/transactions/${row.original.id}`}>
-                  <Eye className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                  <Eye className="h-3.5 w-3.5" />
+                  <span>Details</span>
                 </Link>
               </Button>
             )}

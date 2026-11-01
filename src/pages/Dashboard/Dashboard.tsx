@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import {
   useGetAdminAnalyticsQuery,
   useGetAdminChartsQuery,
 } from '@/features/analytics/analyticsApi';
 import { DashboardHeader } from './components/DashboardHeader';
+import { CurrencyFilterBar } from './components/CurrencyFilterBar';
 import { OverviewStatsCards } from './components/OverviewStatsCards';
 import { RevenueChartCard } from './components/RevenueChartCard';
 import { UserGrowthChartCard } from './components/UserGrowthChartCard';
@@ -14,13 +16,15 @@ import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function Dashboard() {
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('KES');
+
   const {
     data: analyticsResponse,
     isLoading: isAnalyticsLoading,
     isFetching: isAnalyticsFetching,
     error: analyticsError,
     refetch: refetchAnalytics,
-  } = useGetAdminAnalyticsQuery();
+  } = useGetAdminAnalyticsQuery(selectedCurrency);
 
   const {
     data: chartsResponse,
@@ -28,7 +32,7 @@ export default function Dashboard() {
     isFetching: isChartsFetching,
     error: chartsError,
     refetch: refetchCharts,
-  } = useGetAdminChartsQuery();
+  } = useGetAdminChartsQuery(selectedCurrency);
 
   const handleRefresh = () => {
     refetchAnalytics();
@@ -52,6 +56,9 @@ export default function Dashboard() {
           </div>
           <Skeleton className="h-9 w-28" />
         </div>
+
+        {/* Currency Switcher Skeleton */}
+        <Skeleton className="h-20 w-full rounded-xl" />
 
         {/* Stats Skeletons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -106,13 +113,23 @@ export default function Dashboard() {
       {/* Top Header Banner */}
       <DashboardHeader onRefresh={handleRefresh} isFetching={isFetching} />
 
+      {/* Multi-Currency Dropdown Filter Bar with Swipe Controls */}
+      <CurrencyFilterBar
+        selectedCurrency={selectedCurrency}
+        onSelectCurrency={setSelectedCurrency}
+        revenueByCurrency={analytics?.revenueByCurrency}
+      />
+
       {/* 4 Main KPI Cards */}
       <OverviewStatsCards analytics={analytics} />
 
       {/* Main Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <RevenueChartCard data={charts?.revenueChart} />
+          <RevenueChartCard
+            data={charts?.revenueChart}
+            currencyCode={analytics?.reportingCurrency || selectedCurrency}
+          />
         </div>
         <div className="lg:col-span-1">
           <SubscriptionDistributionCard subscriptions={analytics?.subscriptions} />

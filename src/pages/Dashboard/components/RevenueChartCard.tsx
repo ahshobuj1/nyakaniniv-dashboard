@@ -14,9 +14,10 @@ import type { MonthlyRevenueData } from '@/features/analytics/type';
 
 interface RevenueChartCardProps {
   data?: MonthlyRevenueData[];
+  currencyCode?: string;
 }
 
-export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
+export function RevenueChartCard({ data = [], currencyCode = 'KES' }: RevenueChartCardProps) {
   // Format month (e.g., '2026-08' -> 'Aug 2026')
   const formattedData = data.map((item) => {
     let label = item.month;
@@ -46,22 +47,22 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
             <div className="flex items-center gap-2">
               <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
                 <Banknote size={18} className="text-primary" />
-                Monthly Revenue Performance
+                Monthly Revenue Performance ({currencyCode})
               </CardTitle>
               <Badge variant="outline" className="text-xs font-semibold text-primary border-primary/20 bg-primary/5">
-                Subscriptions
+                {currencyCode} Subscriptions
               </Badge>
             </div>
             <CardDescription className="text-xs text-muted-foreground mt-1">
-              Monthly subscription fees generated from DJ platform plans
+              Monthly subscription fees generated from DJ platform plans in {currencyCode}
             </CardDescription>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="text-right">
-              <span className="text-xs text-muted-foreground">Total Period</span>
-              <p className="text-base font-bold text-foreground">
-                KES {totalPeriodRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              <span className="text-xs text-muted-foreground">Total Period ({currencyCode})</span>
+              <p className="text-base font-bold text-foreground font-mono">
+                {currencyCode} {totalPeriodRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -71,14 +72,14 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4 pt-3 border-t border-border/40 text-xs">
           <div className="bg-muted/40 p-2.5 rounded-lg border border-border/30">
             <span className="text-muted-foreground block text-[11px]">Monthly Average</span>
-            <span className="font-semibold text-foreground text-sm">
-              KES {avgMonthly.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+            <span className="font-semibold text-foreground text-sm font-mono">
+              {currencyCode} {avgMonthly.toLocaleString('en-US', { maximumFractionDigits: 0 })}
             </span>
           </div>
           <div className="bg-muted/40 p-2.5 rounded-lg border border-border/30">
             <span className="text-muted-foreground block text-[11px]">Peak Month</span>
-            <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-sm">
-              KES {maxRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+            <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-sm font-mono">
+              {currencyCode} {maxRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
             </span>
           </div>
           <div className="hidden sm:block bg-muted/40 p-2.5 rounded-lg border border-border/30">
@@ -92,7 +93,7 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
         {formattedData.length === 0 ? (
           <div className="h-64 flex flex-col items-center justify-center text-muted-foreground text-sm">
             <Calendar size={32} className="mb-2 opacity-40" />
-            <p>No revenue records found for this period</p>
+            <p>No {currencyCode} revenue records found for this period</p>
           </div>
         ) : (
           <div className="h-72 w-full pt-4">
@@ -132,11 +133,11 @@ export function RevenueChartCard({ data = [] }: RevenueChartCardProps) {
                       return (
                         <div className="bg-popover border border-border p-3 rounded-xl shadow-xl text-xs">
                           <p className="font-bold text-foreground mb-1">{label}</p>
-                          <div className="flex items-center gap-2 text-primary font-semibold text-sm">
-                            <span>KES {amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                          <div className="flex items-center gap-2 text-primary font-semibold text-sm font-mono">
+                            <span>{currencyCode} {amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                           </div>
                           <span className="text-[10px] text-muted-foreground mt-1 block">
-                            Subscription Billings
+                            Subscription Billings ({currencyCode})
                           </span>
                         </div>
                       );

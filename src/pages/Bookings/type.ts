@@ -26,29 +26,49 @@ export interface BookingTenant {
 
 export interface BookingQuote {
   id: string;
+  bookingId?: string;
   version: number;
   amount: number | string;
-  currencyCode: string | null;
+  currency?: string | null;
+  currencyCode?: string | null;
   notes: string | null;
   status: string;
-  proposedByRole: string;
+  proposedBy?: string;
+  proposedByRole?: string;
   createdAt: string;
+  acceptedAt?: string | null;
 }
 
 export interface BookingAgreement {
   id: string;
   bookingId: string;
+  quoteId?: string | null;
   agreedAmount: number | string;
-  currencyCode: string | null;
-  snapshotAt: string;
+  agreedCurrency?: string | null;
+  currencyCode?: string | null;
+  snapshotAt?: string | null;
   createdAt: string;
   termsVersion?: string | null;
 }
 
 export interface BookingMessage {
   id: string;
-  senderRole: 'CLIENT' | 'DJ' | 'ADMIN' | string;
-  message: string;
+  bookingId?: string;
+  senderType?: 'CLIENT' | 'DJ' | 'ADMIN' | string;
+  senderRole?: 'CLIENT' | 'DJ' | 'ADMIN' | string;
+  senderId?: string | null;
+  content?: string;
+  message?: string;
+  createdAt: string;
+}
+
+export interface BookingAuditEvent {
+  id: string;
+  bookingId: string;
+  actorType: string;
+  actorId?: string | null;
+  eventType: string;
+  metadata?: Record<string, unknown> | null;
   createdAt: string;
 }
 
@@ -73,9 +93,18 @@ export interface Booking {
   eventTimezone: string | null;
   paymentStatus: string;
   payoutStatus: string;
+  paymentDueAt?: string | null;
+  confirmedAt?: string | null;
+  completedAt?: string | null;
+  cancelledAt?: string | null;
   orderReference: string | null;
   directPaymentStatus?: string | null;
-  completedAt?: string | null;
+  directPaymentMethod?: string | null;
+  directPaymentProofUrl?: string | null;
+  completionRequestedAt?: string | null;
+  completionConfirmedAt?: string | null;
+  issueReportedAt?: string | null;
+  issueDescription?: string | null;
   createdAt: string;
   updatedAt: string;
   client?: BookingClient | null;
@@ -83,7 +112,18 @@ export interface Booking {
   quotes?: BookingQuote[];
   agreement?: BookingAgreement | null;
   messages?: BookingMessage[];
+  auditEvents?: BookingAuditEvent[];
   review?: BookingReview | null;
+  invoice?: {
+    id: string;
+    invoiceNumber?: string | null;
+    amount?: number | string | null;
+    currency?: string | null;
+    status?: string | null;
+    gateway?: string | null;
+    createdAt: string;
+    transactions?: Record<string, unknown>[];
+  } | null;
   _count?: {
     messages: number;
     quotes: number;
@@ -99,10 +139,17 @@ export interface BookingsResponse {
       page: number;
       limit: number;
       totalPages: number;
-      hasNext: boolean;
-      hasPrevious: boolean;
     };
   };
   data: Booking[];
 }
 
+export interface BookingFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: string;
+  paymentStatus?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
