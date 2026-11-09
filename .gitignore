@@ -22,8 +22,6 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
-.env
-.env.local
 .env*.local
 branch_structure.json
 temp_auto_push.bat
